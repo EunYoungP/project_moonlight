@@ -53,7 +53,7 @@ ExportedObj/
 *.mdb.meta
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
-/[Aa]ssets/
+# /[Aa]ssets/
 !/[Aa]ssets/**/*.meta
 
 # Unity3D generated file on crash reports
