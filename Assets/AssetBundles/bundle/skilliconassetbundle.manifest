@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 1260961430
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 39817f278b1261e16b65b0720b64934b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 192e690a6ab30273b050a05752742228
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+- Class: 687078895
+  Script: {instanceID: 0}
+Assets:
+- Assets/DownLoad/SkillIcon/SkillIconSpriteAtlas.spriteatlas
+Dependencies: []

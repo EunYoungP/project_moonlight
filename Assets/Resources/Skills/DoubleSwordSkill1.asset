@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97bb9ab73395c4e4dba5b3f4ac531043, type: 3}
+  m_Name: DoubleSwordSkill1
+  m_EditorClassIdentifier: 
+  name: "\uC6A9\uB9F9\uC758 \uAC80"
+  key: 1
+  description: "\uACF5\uACA9\uB825 120%\uC758 \uBC94\uC704\uACF5\uACA9\uC744 \uD569\uB2C8\uB2E4."
+  skillIcon: DoubleSword_Skill1
+  skillType: 1
+  skillNum: 1
+  manaCost: 13
+  attack: 1.2
+  health: 0
+  coolTime: 8
+  useLevel: 1
+  skillRange: 3
+  UseWeaponState: 2
+  isEquip: 0

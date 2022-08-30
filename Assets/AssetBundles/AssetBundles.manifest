@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2878934872
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: bundle/skilliconassetbundle
+      Dependencies: {}
