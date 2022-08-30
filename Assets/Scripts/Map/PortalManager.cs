@@ -65,7 +65,7 @@ public class PortalManager : MonoBehaviour
         ChangeTargetPos(Player.Instance.gameObject, portalCurrScene);
 
         Player.Instance.playerController.ChangeState(PlayerState.Idle);
-        Player.Instance.playerController.usingPortal = false;
+        Player.Instance.playerController.isUsingPortal = false;
         usingPortal = false;
     }
 

@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public string keyCode;
     public Character data;
     public PlayerController playerController;
+    public PlayerInput playerInput { get; set; }
     public Transform startPos;
     public GameObject levelUpVFX;
     public Rigidbody rigid;
@@ -23,9 +24,9 @@ public class Player : MonoBehaviour
 
     // [Talk]
     public TalkManager talkMng;
-    public bool isTalking;
+    public bool isTalking { get; set; }
     private int talkIndex = 0;
-    public GameObject touchControllPanel;
+    public GameObject inputControlPanel;
     public PlayerCamera playerCamera;
 
     // [Quest]
@@ -43,9 +44,7 @@ public class Player : MonoBehaviour
     public Action<int, NPC> CloseQuestUIEvent;
     public Action<QuestData> QuestNotificationEvent;
     public Action<string> GetItemWhenEndTalk;
-    public bool isActiveQuestUI;
 
-    
     private static Player instance;
     public static Player Instance
     {
@@ -72,7 +71,9 @@ public class Player : MonoBehaviour
         keyCode = "Player1";
         data = SLManager.Instance.characterDataDic[keyCode];
         playerController = gameObject.GetComponent<PlayerController>();
+        playerInput = gameObject.GetComponent<PlayerInput>();
         playerController.Init();
+        playerInput.Init();
         SetHpBar();
         talkMng = TalkManager.Instance;
         playerCamera = Camera.main.gameObject.GetComponent<PlayerCamera>();
@@ -136,9 +137,9 @@ public class Player : MonoBehaviour
     public void SetTarget(Monster monster)
     {
         if (monster == null)
-            playerController.m_targetPos = null;
+            playerController.targetPos = null;
         else
-            playerController.m_targetPos = monster.transform;
+            playerController.targetPos = monster.transform;
     }
 
     // Animation 파일에 event 추가
@@ -160,9 +161,9 @@ public class Player : MonoBehaviour
         // Area 스킬일때는 소리가 안나게 수정해야합니다.
         SoundManager.Instance.Play("SkillSFX/NoWeapon/AWP_Impact_Smack_11");
 
-        if (playerController.m_targetPos != null)
+        if (playerController.targetPos != null)
         {
-            Monster _target = playerController.m_targetPos.GetComponent<Monster>();
+            Monster _target = playerController.targetPos.GetComponent<Monster>();
 
             if (_target == null)
                 return;
@@ -176,12 +177,12 @@ public class Player : MonoBehaviour
 
     public void SetDamage()
     {
-        ShakeCamera.Instance.OnShakeCamera(0.1f, 0.3f);
+        ShakeCamera.Instance.OnShakeCamera(0.1f, 0.1f);
 
         if (data.isDead == false)
         {
             // 내가 맞기전까지 누구한테 맞는지 모르기때문에 SetDamgae는 SetAttack 에서 불러줘야함
-            Monster target = playerController.m_targetPos.GetComponent<Monster>();
+            Monster target = playerController.targetPos.GetComponent<Monster>();
             bool isSkip = UnityEngine.Random.Range(0, 100) >= target.data.skipDamagedMove ? false : true;
 
             if(!isSkip)
@@ -201,7 +202,7 @@ public class Player : MonoBehaviour
 
     public void ChangeAnimator()
     {
-        playerController.isChanging = true;
+        playerController.ChangeState(PlayerState.ChangeWeapon);
     }
 
     public void SetHpBar()
@@ -232,27 +233,17 @@ public class Player : MonoBehaviour
     }
 
     #region 대화진행
-
-    private void PrintItemName()
-    {
-        for(int i = 0; i < ItemDB.Instance.itemDB.Count; i++)
-        {
-            Debug.Log(ItemDB.Instance.itemDB[i].name);
-        }
-    }
-
     public void TalkNpc(int npcId, NPC npc)
     {
-        PrintItemName();
-
-        CheckQuestUI();
-
-        if (isActiveQuestUI)
+        if (QuestDialogActive())
             return;
 
         // 카메라 줌인
         if (isTalking == false)
+        {
+            StartTalk();
             playerCamera.ZoomIn(npc.gameObject);
+        }
 
         // 퀘스트 데이터 받기
         int questTalkIndex = questMng.GetQuestTalkIndex();
@@ -262,6 +253,9 @@ public class Player : MonoBehaviour
         // 대화 종료 검사
         if (talkData == null)
         {
+            // QuestPopUp창이 Close 될때 
+            // 실행된 TalkNPC 에서 받은 Quest가 없어서
+            // talkData 가 없고, Quest 상태가 아닌데도 실행됨
             EndTalk(npc);
             return;
         }
@@ -270,19 +264,38 @@ public class Player : MonoBehaviour
         npc.OnChatBox(talkData);
         npc.Rotate(gameObject.transform.position);
 
-        isTalking = true;
-        touchControllPanel.SetActive(isTalking);
         talkIndex++;
+    }
+
+    private bool QuestDialogActive()
+    {
+        bool isQuestDialogActive = UIGameMng.Instance.uiGameDic[UIGameType.QuestDialog].GetUIActiveState();
+
+        if (isQuestDialogActive)
+        {
+           //CloseQuestUIEvent += TalkNpc;
+        }
+        else if (!isQuestDialogActive)
+        {
+        }
+        return isQuestDialogActive;
+    }
+    
+    private void StartTalk()
+    {
+        isTalking = true;
+        inputControlPanel.SetActive(isTalking);
+        //playerController.ChangeState(PlayerState.Talk);
     }
 
     private void EndTalk(NPC npc)
     {
         isTalking = false;
-        touchControllPanel.SetActive(isTalking);
+        inputControlPanel.SetActive(isTalking);
         talkIndex = 0;
         npc.OffChatBox();
         playerCamera.ZoomOut();
-        //Debug.Log(questMng.CheckQuest(npcId));
+        playerController.ChangeState(PlayerState.Idle);
 
         if (GetItemWhenEndTalk != null)
         {
@@ -297,23 +310,6 @@ public class Player : MonoBehaviour
         QuestData prevQuestData = QuestManager.Instance.GetPrevQuestData();
         QuestNotificationEvent(prevQuestData);
     }
-
-    private void CheckQuestUI()
-    {
-        // 퀘스트팝업 실행중
-        // 퀘스트 팝업 꺼져도 실행중으로 인식
-        if(QuestManager.Instance.CheckQuestUIActive())
-        {
-            AddCloseQuestUIEvent();
-        }
-    }
-
-    private void AddCloseQuestUIEvent()
-    {
-        CloseQuestUIEvent += TalkNpc;
-        isActiveQuestUI = true;
-    }
-
     #endregion
 
     private void LateUpdate()

@@ -93,7 +93,7 @@ public class SkillPopUp : MonoBehaviour
                 if (hitInfo.collider.CompareTag("Monster"))
                 {
                     target = hitInfo.collider.gameObject;
-                    Player.Instance.playerController.m_targetPos = target.transform;
+                    Player.Instance.playerController.targetPos = target.transform;
                     return hitInfo.point;
                 }
             }
@@ -126,5 +126,4 @@ public class SkillPopUp : MonoBehaviour
         TargetMarker.SetActive(false);
         AreaMarker.SetActive(false);
     }
-
 }

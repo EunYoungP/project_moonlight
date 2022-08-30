@@ -106,27 +106,21 @@ public class GolemController : MonoBehaviour, BaseController
 
     void Idle()
     {
-        // 3초동안 idle 상태 유지하는 코드 추가
+        // 시간간격동안 idle 상태 유지
         if((Time.time - m_idlePrevTime) >= m_idleInterval)
         {
             ChangeState(MonsterState.Patrol);
         }
     }
 
-    //IEnumerator WaitSeconds()
-    //{
-    //    yield return new WaitForSeconds(3f);
-    //}
-
     void Patrol()
     {
-        //Debug.Log(m_patrolList[m_patrolIndex]);
-        //Debug.Log("현재 캐릭터 위치 : " + transform.position);
         transform.position =  Vector3.MoveTowards(transform.position, m_patrolList[m_patrolIndex], 0.05f);
 
         Vector3 dir =  m_patrolList[m_patrolIndex] - transform.position;
+
         // 높낮이 있을 경우를 대비
-        dir.y = 0;
+        dir.y = 0;  
         transform.rotation = Quaternion.LookRotation(dir);
 
         float distance = Vector3.Distance(transform.position, m_patrolList[m_patrolIndex]);
@@ -140,15 +134,15 @@ public class GolemController : MonoBehaviour, BaseController
 
     void TraceTheEnemy()
     {
-        // player attack error
-        // Rotate
+        if (m_target == null)
+            return;
+
         Vector3 _target = m_target.transform.position - transform.position;
         _target.y = 0;
         transform.rotation = Quaternion.LookRotation(_target);
 
         float distance = Vector3.Distance(transform.position, m_target.transform.position);
 
-        // m_findRange와 골렘의 시야길이를 맞춰야함
         if(distance >= m_findRange)
         {
             ChangeState(MonsterState.Idle);
@@ -159,14 +153,12 @@ public class GolemController : MonoBehaviour, BaseController
         }
 
         transform.position = Vector3.MoveTowards(transform.position, m_target.position, 0.1f);
-
     }
 
     void Attack()
     {
         m_elapsedTime += Time.deltaTime;
 
-        // null exception 조건문 위로뺌
         if (m_target == null)
         {
             AnimatorStateInfo stateinfo = m_animator.GetCurrentAnimatorStateInfo(0);
@@ -181,16 +173,12 @@ public class GolemController : MonoBehaviour, BaseController
             if (m_attackTime <= m_elapsedTime)
             {
                 m_elapsedTime = 0;
-                
-                //2020.12.16 수정
                 m_animator.SetTrigger("Attack");
-                //ChangeState(MonsterState.Attack);
             }
         }
         else
         {
             AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
-            // 현재 애니메이션이 변경중인 상태가 아니고, 플레이 되고 있는 애니메이션이 Attack이 아닐때
             if(!m_animator.IsInTransition(0) && !info.IsTag("Attack"))
             {
                 if(distance <= m_findRange)
@@ -214,7 +202,6 @@ public class GolemController : MonoBehaviour, BaseController
         }
 
         AnimatorStateInfo stateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-        //    // 04.23 애니메이션이 80% 이상 실행되었을 때 대기 애니메이션으로 바꿀 수 있도록 추가해 놓았습니다.
         if (stateInfo.normalizedTime >= 0.8f)
             ChangeState(MonsterState.Idle);
     }
@@ -230,7 +217,7 @@ public class GolemController : MonoBehaviour, BaseController
             Player.Instance.data.LevelUpdate(monster.data);
             Player.Instance.SetTarget(null);
 
-            // 몬스터다이 퀘스트 추가
+            // 몬스터 토벌 퀘스트 추가
             if(Player.Instance.MonsterHuntEvent != null)
                 Player.Instance.MonsterHuntEvent(monster);
 
@@ -240,7 +227,6 @@ public class GolemController : MonoBehaviour, BaseController
 
     void Update()
     {
-        // trasnform.SendMessage(m_CurrState.ToString(), ~~)
         switch(m_currState)
         {
             case MonsterState.Patrol:

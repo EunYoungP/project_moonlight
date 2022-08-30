@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class UIQuestDialog : BaseGameUI
 {
@@ -72,9 +73,8 @@ public class UIQuestDialog : BaseGameUI
 
         if (Player.Instance.CloseQuestUIEvent != null)
         {
-            Player.Instance.isActiveQuestUI = false;
             Player.Instance.CloseQuestUIEvent(NPCManager.Instance.selectedNpc.npcID, NPCManager.Instance.selectedNpc);
-            Player.Instance.CloseQuestUIEvent -= Player.Instance.TalkNpc;
+            //Player.Instance.CloseQuestUIEvent -= Player.Instance.TalkNpc;
         }
         gameObject.SetActive(false);
     }
@@ -84,9 +84,21 @@ public class UIQuestDialog : BaseGameUI
         if (!isActive)
             return;
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            Close();
+            if (EventSystem.current.IsPointerOverGameObject())
+                Close();
+
+            //Vector3 mousePosition = Input.mousePosition;
+            //mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
+
+            //RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward);
+            //Debug.DrawRay(mousePosition, transform.forward * 10, Color.red, 0.3f);
+            //// hit null excetion
+            //if (hit.transform.CompareTag("TouchPanel"))
+            //{
+            //    Close();
+            //}
         }
     }
 }

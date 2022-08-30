@@ -39,14 +39,14 @@ public class ShakeCamera : MonoBehaviour
         StartCoroutine(ShakeCameraByRotation());
     }
 
-    IEnumerator ShakeCameraByRotation()
+    private IEnumerator ShakeCameraByRotation()
     {
         Vector3 startRotation = shakeCamera.transform.eulerAngles;
         float shakePower = 20f;
 
         while(shakeTime > 0)
         {
-            playerController.OnShakeCamera = true;
+            playerController.isShakingCamera = true;
 
             float x = 0;
             float y = 0;
@@ -59,6 +59,6 @@ public class ShakeCamera : MonoBehaviour
         }
         shakeCamera.transform.rotation = Quaternion.Euler(startRotation);
 
-        playerController.OnShakeCamera = false;
+        playerController.isShakingCamera = false;
     }
 }

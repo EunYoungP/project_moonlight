@@ -10,24 +10,15 @@ public class PlayerCamera : MonoBehaviour
     private float distanceY = 11f;
     private float distanceZ = -6f;
 
-    // [대화 시스템]
+    // 대화 시스템
     private GameObject target;
 
-    // [줌 효과]
+    // 줌 효과
     private bool isMoving;
     private Transform beforeZoomTr;
     private float rotateTime = 1.0f;
     private float zoomTime = 0.5f;
     private float distance;
-
-    //void Start()
-    //{
-    //    if(Player.Instance != null)
-    //        playerBeforePos = Player.Instance.transform.position;
-
-    //     처음 카메라 위치 지정
-    //    transform.position = playerBeforePos + new Vector3(distanceX, distanceY, distanceZ);
-    //}
 
     public void CameraInit()
     {
@@ -61,7 +52,7 @@ public class PlayerCamera : MonoBehaviour
         StartCoroutine(ZoomInAction(target));
     }
 
-    IEnumerator ZoomInAction(GameObject target)
+    private IEnumerator ZoomInAction(GameObject target)
     {
         if (target == null)
             yield return null;
@@ -85,7 +76,7 @@ public class PlayerCamera : MonoBehaviour
         StartCoroutine(ZoomOutAction());
     }
 
-    IEnumerator ZoomOutAction()
+    private IEnumerator ZoomOutAction()
     {
         while( Camera.main.fieldOfView != 60)
         {
@@ -98,7 +89,7 @@ public class PlayerCamera : MonoBehaviour
         yield return null;
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         if(isMoving)
             return;

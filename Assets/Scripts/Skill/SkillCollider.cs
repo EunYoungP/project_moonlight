@@ -32,7 +32,7 @@ public class SkillCollider : MonoBehaviour
         {
             if(other.gameObject.CompareTag("Monster"))
             {
-                Player.Instance.playerController.m_targetPos = other.gameObject.transform;
+                Player.Instance.playerController.targetPos = other.gameObject.transform;
                 Player.Instance.OnAttack();
             }
             NotActiveTrigger();
@@ -45,7 +45,7 @@ public class SkillCollider : MonoBehaviour
                     return;
 
                 areaSkillOverlapMonster.Add(other.gameObject);
-                Player.Instance.playerController.m_targetPos = other.gameObject.transform;
+                Player.Instance.playerController.targetPos = other.gameObject.transform;
                 Player.Instance.OnAttack();
             }
         }

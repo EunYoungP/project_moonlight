@@ -195,7 +195,7 @@ public class QuestManager : MonoBehaviour
         if (!startQuest)
             return;
 
-        // 느낌표 알림표시
+        // 느낌표 UI
         //NPC startNPC = NPCManager.Instance.GetNPC(questDatas[currQuestId].npcId[questActionIndex]);
         //if (startNPC != null)
         //    startNPC.OnQuestSign();
@@ -358,17 +358,5 @@ public class QuestManager : MonoBehaviour
     {
         UIGameMng.Instance.uiGameDic[UIGameType.Notification].Open(currQuestData.details[questActionIndex]);
     }
-
-    public bool CheckQuestUIActive()
-    {
-        // 퀘스트팝업이 꺼질때 true반환 오류
-        bool QuestDialogActState = UIGameMng.Instance.uiGameDic[UIGameType.QuestDialog].GetUIActiveState();
-
-        if (!QuestDialogActState )
-            return false;
-        else
-            return true;
-    }
-
     #endregion
 }

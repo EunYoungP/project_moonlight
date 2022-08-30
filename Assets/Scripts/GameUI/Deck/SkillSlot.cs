@@ -33,9 +33,9 @@ public class SkillSlot : MonoBehaviour, IPointerUpHandler
     {
         currSkill = skill;
         skillIcon.gameObject.SetActive(true);
-        //DownLoadAssetBundle.Instance.LoadSkillSprite(this.skillIcon.sprite, skill.skillIcon);
-        //this.skillIcon.sprite = skill.skillIcon;
         isEmptySlot = false;
+        DownLoadAssetBundle.Instance.SetSkillSlotSprite();
+        //this.skillIcon.sprite = skill.skillIcon;
     }
 
     public void UnEquipSkill()

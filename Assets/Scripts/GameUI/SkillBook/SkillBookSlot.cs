@@ -35,7 +35,6 @@ public class SkillBookSlot : MonoBehaviour
         if (isWaitEquip)
         {
             EquipSkill(skill);
-            isEmpty = false;
             return true;
         }
         // 스킬해제 대기상태
@@ -44,7 +43,6 @@ public class SkillBookSlot : MonoBehaviour
             if(!isEmpty)
             {
                 UnEquipSkill();
-                isEmpty = true;
             }
         }
         return false;
@@ -52,15 +50,17 @@ public class SkillBookSlot : MonoBehaviour
 
     public void EquipSkill(Skill skill)
     {
+        isEmpty = false;
         this.skill = skill;
         skillIcon.gameObject.SetActive(true);
         skill.isEquip = true;
         //skillIcon.sprite = skill.skillIcon;
-        //DownLoadAssetBundle.Instance.SetSkillBookSlotSprite();
+        DownLoadAssetBundle.Instance.SetSkillBookSlotSprite();
     }
 
     public void UnEquipSkill()
     {
+        isEmpty = true;
         skill.isEquip = false;
         skill = null;
         skillIcon.sprite = null;

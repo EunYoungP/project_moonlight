@@ -163,5 +163,16 @@ public class SceneMng : MonoBehaviour
         if(Player.Instance.playerCamera != null)
             Player.Instance.playerCamera.CameraInit();
     }
+
+    public bool LoadingState()
+    {
+        if (currScene == SceneState.LogoScene
+            || currScene == SceneState.SelectScene
+            || currScene == SceneState.TitleScene)
+        {
+            return true;
+        }
+        return false;
+    }
 }
 

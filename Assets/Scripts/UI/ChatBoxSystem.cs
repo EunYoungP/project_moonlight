@@ -31,7 +31,7 @@ public class ChatBoxSystem : MonoBehaviour
 
     private void TypeEffectStart()
     {
-        textmeshpro.text = "";
+        textmeshpro.text = string.Empty;
         typeIndex = 0;
         EndCursor.SetActive(false);
 

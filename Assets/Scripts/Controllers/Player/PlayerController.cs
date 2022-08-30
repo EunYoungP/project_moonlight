@@ -9,113 +9,175 @@ public enum PlayerState
     Idle,
     Move,
     BaseAttack,
-    AttackSkill,
+    SkillAttack,
     GetDamage,
     PickUp,
+    ChangeWeapon,
+    Talk,
     Die,
     AfterDie,
 }
 
+// input 입력 분리
 public class PlayerController : MonoBehaviour
 {
-    // effect Test
-    //public void SetSkill0()
-    //{
-    //    m_animator.SetTrigger("Skill_0");
-    //}
-    //public void SetSkill1()
-    //{
-    //    m_animator.SetTrigger("Skill_1");
-    //}
-    //public void SetSkill2()
-    //{
-    //    m_animator.SetTrigger("Skill_2");
-    //}
+    private PlayerState currState = PlayerState.Idle;
+    public Animator animator { get; set; }
 
-    PlayerState m_currState = PlayerState.Idle;
-    public Animator m_animator;
+    public Transform targetPos { get; set; }
+    public float attackRange {get{ return 2.5f;}}
+    private float speed = 10f;
 
-    public Transform m_targetPos;
-    private float m_attackRange = 2.5f;
-    public float fSpeed = 5f;
+    private float prevTime = 0;
+    public float attackInterval;
+    private Vector3 destination;
 
-    private float m_prevTime = 0;
-    public float m_attackInterval;
-    private Vector3 m_point = Vector3.zero;
-    private Vector3 vEnd;
-
-    public bool isChanging = false;
-    public bool ActiveMarker = false;
-    public bool isSkillState = false;
-    public bool OnShakeCamera { get; set; }
+    public bool isWaitActSkill { get; set; }
+    public bool isSkillState { get; set; }
+    public bool isShakingCamera { get; set; }
+    public bool isUsingPortal { get; set; }
 
     private NPC talkingNpc;
     private float talkDistance = 3.0f;
 
-    public bool usingPortal = false;
-
     private PickUpItem playerPickUpItem;
+    private PlayerInput playerInput;
 
     public void Init()
     {
-        m_animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         ChangeState(PlayerState.Idle);
 
-        // 시작했을때 캐릭터의 정면을 바라보도록 설정함
-        m_point = transform.position + transform.forward;
-        vEnd = transform.position;
+        destination = transform.position;
+        playerInput = gameObject.GetComponent<PlayerInput>();
     }
 
+    public void GetTargetPos(Vector3 destination, Transform targetPos = null)
+    {
+        this.destination = destination;
+        this.targetPos = targetPos;
+    }
+
+    #region FSM
+    #region 상태 전이
     public void ChangeState(PlayerState state)
     {
-        if (m_currState == state && m_currState != PlayerState.BaseAttack)
+        if (currState == state && currState != PlayerState.BaseAttack)
             return;
 
-        if (m_currState == PlayerState.Move)
+        if (currState == PlayerState.Move)
             SoundManager.Instance.StopAudioSource(SOUND.Step);
 
-        m_currState = state;
+        currState = state;
         switch (state)
         {
             case PlayerState.Idle:
-                m_animator.SetBool("Run", false);
+                animator.SetBool("Run", false);
                 break;
             case PlayerState.Move:
-                m_animator.SetBool("Run", true);
-                SoundManager.Instance.Play("Step/Running-4",SOUND.Step);
+                animator.SetBool("Run", true);
+                SoundManager.Instance.Play("Step/Running-4", SOUND.Step);
                 break;
             case PlayerState.BaseAttack:
-                {
-                    m_animator.SetBool("Run", false);
-                    Vector3 dir = m_targetPos.position - transform.position;
-                    dir.y = 0;
-                    transform.rotation = Quaternion.LookRotation(dir);
-                    m_prevTime = Time.time;
-                    m_animator.SetTrigger("Attack");
-                }
+                animator.SetBool("Run", false);
+                Vector3 dir = targetPos.position - transform.position;
+                dir.y = 0;
+                transform.rotation = Quaternion.LookRotation(dir);
+                prevTime = Time.time;
+                animator.SetTrigger("Attack");
                 break;
-            case PlayerState.AttackSkill:
-                m_animator.SetBool("Run", false);
+            case PlayerState.SkillAttack:
+                animator.SetBool("Run", false);
                 CheckSkill();
                 break;
             case PlayerState.GetDamage:
-                m_animator.SetBool("Run", false);
-                m_animator.SetTrigger("Damaged");
+                animator.SetBool("Run", false);
+                animator.SetTrigger("Damaged");
                 break;
             case PlayerState.PickUp:
-                m_animator.SetBool("Run", false);
-                m_animator.SetTrigger("PickUp");
+                animator.SetBool("Run", false);
+                animator.SetTrigger("PickUp");
+                break;
+            case PlayerState.ChangeWeapon:
+                break;
+            case PlayerState.Talk:
+                animator.SetBool("Run", false);
                 break;
             case PlayerState.Die:
-                m_animator.SetBool("Run", false);
-                m_animator.SetTrigger("Dead");
+                animator.SetBool("Run", false);
+                animator.SetTrigger("Dead");
                 break;
             case PlayerState.AfterDie:
-                m_animator.SetBool("Run", false);
+                animator.SetBool("Run", false);
                 break;
         }
     }
+    #endregion
 
+    private void Update()
+    {
+        if (!IsExceptionInput())
+           playerInput.GameInput();
+
+        ActionState();
+    }
+
+    private bool IsExceptionInput()
+    {
+        bool uiInput = EventSystem.current.IsPointerOverGameObject();
+        bool loadingState = SceneMng.Instance.LoadingState();
+        if (uiInput
+            || isWaitActSkill
+            || isSkillState
+            || isShakingCamera
+            || loadingState)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    #region 상태
+    private void ActionState()
+    {
+        switch (currState)
+        {
+            case PlayerState.Idle:
+                Idle();
+                break;
+            case PlayerState.Move:
+                MoveState();
+                break;
+            case PlayerState.BaseAttack:
+                AttackState();
+                break;
+            case PlayerState.SkillAttack:
+                AttackSkill();
+                break;
+            case PlayerState.GetDamage:
+                GetDamage();
+                break;
+            case PlayerState.PickUp:
+                PickUp();
+                break;
+            case PlayerState.ChangeWeapon:
+                ChangeWeapon();
+                break;
+            case PlayerState.Talk:
+                TalkState();
+                break;
+            case PlayerState.Die:
+                PlayerDie();
+                break;
+            case PlayerState.AfterDie:
+                AfterDie();
+                break;
+        }
+    }
+    #endregion
+    #endregion
+
+    #region 스킬
     private void CheckSkill()
     {
         Skill selectedSkill = SkillManager.Instance.currSelectedSkill;
@@ -130,54 +192,43 @@ public class PlayerController : MonoBehaviour
         switch (selectedSkill.key)
         {
             case 0:
-                m_animator.SetTrigger("Skill_0");
+                animator.SetTrigger("Skill_0");
                 break;
             case 1:
-                m_animator.SetTrigger("Skill_1");
+                animator.SetTrigger("Skill_1");
                 break;
             case 2:
-                m_animator.SetTrigger("Skill_2");
+                animator.SetTrigger("Skill_2");
                 break;
         }
     }
-    
-    void AttackSkill()
+
+    private void AttackSkill()
     {
         if (!isSkillState)
         {
-            isSkillState = false;
             ChangeState(PlayerState.Idle);
             return;
         }
 
-        AnimatorStateInfo stateinfo = m_animator.GetCurrentAnimatorStateInfo(0);
-        // 단순히 테스트 스킬이 2개 연속이기때문에 1.9 초를 기준으로 삼았기때문에 후에 추가수정해야함
-        //if (!stateinfo.IsName("Idle") && stateinfo.normalizedTime >= 1.9)
+        AnimatorStateInfo stateinfo = animator.GetCurrentAnimatorStateInfo(0);
         if (!stateinfo.IsName("Idle") && stateinfo.normalizedTime >= 1)
         {
             ChangeState(PlayerState.Idle);
-            // 이부분을 활성화 시키면 effect 첫번째 순서에서 실행이 안됨
-            //SkillManager.Instance.currSelectedSkill = null;
             isSkillState = false;
         }
-        // 스킬의 콜라이더 체크
     }
 
     // 타겟까지 이동
+    // skillTargetPos 안쓰임
     public void SetTargetSkill(Vector3 skillTargetPos)
     {
-        // 타겟 지정
-        // m_targetPos == null 오류
-        //m_targetPos.position = skillTargetPos;
-
-        // 방향
-        Vector3 dir = m_targetPos.transform.position - transform.position;
-        // 거리
+        Vector3 dir = targetPos.transform.position - transform.position;
         float distance = dir.magnitude;
         dir.Normalize();
 
-        Rotate(m_targetPos.transform.position);
-        vEnd = transform.position + dir * (distance - m_attackRange);
+        Rotate(targetPos.transform.position);
+        destination = transform.position + dir * (distance - attackRange);
 
         ChangeState(PlayerState.Move);
     }
@@ -187,23 +238,27 @@ public class PlayerController : MonoBehaviour
         Rotate(mousePoint);
         SkillManager.skillColliderManager.end = mousePoint;
 
-        ChangeState(PlayerState.AttackSkill);
+        ChangeState(PlayerState.SkillAttack);
     }
+    #endregion
+
+    #region 이동
 
     public void Rotate(Vector3 targetPos)
     {
-        Vector3 _target = targetPos - transform.position;
-        _target.y = 0;
-        transform.rotation = Quaternion.LookRotation(_target);
+        Vector3 targetDir = targetPos - transform.position;
+        targetDir.y = 0;
+        transform.rotation = Quaternion.LookRotation(targetDir);
     }
 
     private void Move()
     {
-        if (m_targetPos == null)
-            transform.position = Vector3.MoveTowards(transform.position, vEnd, Time.deltaTime * fSpeed);
+        if (targetPos == null)
+            transform.position = Vector3.MoveTowards(transform.position, destination, Time.deltaTime * speed);
         else
-            transform.position = Vector3.MoveTowards(transform.position, m_targetPos.transform.position, Time.deltaTime * fSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, Time.deltaTime * speed);
     }
+    #endregion
 
     private void Idle()
     {
@@ -214,15 +269,15 @@ public class PlayerController : MonoBehaviour
     {
         Move();
 
-        if (m_targetPos != null)
+        if (targetPos != null)
         {
             // 타겟의 태그값이 몬스터일 경우 처리합니다.
-            if (m_targetPos.tag.Equals("Monster"))
+            if (targetPos.tag.Equals("Monster"))
             {
                 // 기본공격
                 if(!isSkillState)
                 {
-                    if (Vector3.Distance(transform.position, m_targetPos.transform.position) <= m_attackRange)
+                    if (Vector3.Distance(transform.position, targetPos.transform.position) <= attackRange)
                     {
                         ChangeState(PlayerState.BaseAttack);
                     }
@@ -231,68 +286,88 @@ public class PlayerController : MonoBehaviour
                 else if(isSkillState)
                 {
                     Skill currentSkill = SkillManager.Instance.currSelectedSkill;
-                    if(Vector3.Distance(transform.position, m_targetPos.transform.position) <= currentSkill.skillRange)
+                    if(Vector3.Distance(transform.position, targetPos.transform.position) <= currentSkill.skillRange)
                     {
-                        ChangeState(PlayerState.AttackSkill);
+                        ChangeState(PlayerState.SkillAttack);
                     }
                 }
             }
             // 타겟의 태그값이 아이템이라면 거리에 따라 획득할 수 있도록 합니다.
-            else if (m_targetPos.tag.Equals("Item"))
+            else if (targetPos.tag.Equals("Item"))
             {
-                if (Vector3.Distance(transform.position, m_targetPos.transform.position) <= 0.5f)
+                if (Vector3.Distance(transform.position, targetPos.transform.position) <= 0.5f)
                 {
-                    PickUpItem pickup = m_targetPos.GetComponent<PickUpItem>();
+                    PickUpItem pickup = targetPos.GetComponent<PickUpItem>();
                     playerPickUpItem = pickup;
 
                     ChangeState(PlayerState.PickUp);
                 }
             }
-            else if(m_targetPos.gameObject.tag.Equals("NPC"))
-            {
-                if (Vector3.Distance(transform.position, m_targetPos.transform.position) <= talkDistance)
-                {
-                    talkingNpc = m_targetPos.gameObject.GetComponent<NPC>();
+            // 타겟의 태그값이 엔피씨라면 거리에따라 대화를 시작합니다.
+            //else if(targetPos.gameObject.tag.Equals("NPC"))
+            //{
+            //    if (Vector3.Distance(transform.position, targetPos.transform.position) <= talkDistance)
+            //    {
+            //        talkingNpc = targetPos.gameObject.GetComponent<NPC>();
 
-                    if(Player.Instance.TalkNpcEvent!= null)
+            //        if(Player.Instance.TalkNpcEvent!= null)
+            //            Player.Instance.TalkNpcEvent(talkingNpc);
+
+            //        Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
+            //        //ChangeState(PlayerState.Idle);
+            //    }
+            //}
+            else if (targetPos.gameObject.tag.Equals("NPC"))
+            {
+                if (Vector3.Distance(transform.position, targetPos.transform.position) <= talkDistance)
+                {
+                    talkingNpc = targetPos.gameObject.GetComponent<NPC>();
+
+                    if (Player.Instance.TalkNpcEvent != null)
                         Player.Instance.TalkNpcEvent(talkingNpc);
 
-                    Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
-                    ChangeState(PlayerState.Idle);
+                    ChangeState(PlayerState.Talk);
+
+                    //ChangeState(PlayerState.Idle);
                 }
             }
         }
-        // terrain 클릭시 움직임
-        else if(m_targetPos== null || vEnd != null)
+        // 목적지로 이동을 완료하면 대기상태로 전환합니다.
+        else if(targetPos== null || destination != null)
         {
-            if (Vector3.Distance(transform.position, vEnd) <= 0.5f)
-            {
+            if (Vector3.Distance(transform.position, destination) <= 0.5f)
                 ChangeState(PlayerState.Idle);
-            }
+        }
+        else
+        {
+            Debug.Log("타겟과 목적지가 존재하지 않습니다.");
         }
     }
 
     // 타겟과 플레이어 거리측정, 공격 속도 조절
     private void AttackState()
     {
-        if ((Time.time - m_prevTime) >= m_attackInterval)
+        // 공격 실행 대기시간이 끝난상태
+        if ((Time.time - prevTime) >= attackInterval)
         {
-            if (m_targetPos == null)
+            if (targetPos == null)
             {
                 ChangeState(PlayerState.Idle);
                 return;
             }
 
-            if (Vector3.Distance(transform.position, vEnd) <= 3)
+            // 타겟이 공격범위에 들어왔을 경우
+            if (Vector3.Distance(transform.position, destination) <= 3)
             {
-                //m_prevTime = Time.time;
                 ChangeState(PlayerState.BaseAttack);
             }
+            // 타겟이 공격범위 바깥에 있을경우
             else
             {
-                AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
-                // 현재 애니메이션이 변경중인 상태가 아니고, 플레이 되고 있는 애니메이션이 Attack이 아닐경우
-                if (!m_animator.IsInTransition(0) && !info.IsTag("Attack"))
+                AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+
+                // 타겟위치로 이동중
+                if (!animator.IsInTransition(0) && !info.IsTag("Attack"))
                 {
                     ChangeState(PlayerState.Move);
                 }
@@ -302,21 +377,52 @@ public class PlayerController : MonoBehaviour
 
     private void PickUp()
     {
-        AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
-        // 현재 애니메이션이 변경중인 상태가 아니고, 플레이 되고 있는 애니메이션이 PickUp 이 아닐경우
-        if (!m_animator.IsInTransition(0) && info.IsName("PickUp") && info.normalizedTime > 0.9)
+        // 픽업 애니메이션이 끝나는 시점
+        if (!animator.IsInTransition(0) && stateInfo.IsName("PickUp") && stateInfo.normalizedTime >= 0.7)
             {
                 playerPickUpItem.PickUp();
                 ChangeState(PlayerState.Idle);
             }
+        else
+        {
+            Debug.Log("픽업 애니메이션이 끝나는 시점이 아닙니다.");
+        }
     }
 
+    private void ChangeWeapon()
+    {
+        AnimatorStateInfo currAnimInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (currAnimInfo.normalizedTime >= 0.9)
+        {
+            animator.runtimeAnimatorController = WeaponManager.Instance.currWeaponAnim.runtimeAnimatorController;
+            ChangeState(PlayerState.Idle);
+        }
+    }
+
+    private void TalkState()
+    {
+        if(!Player.Instance.isTalking)
+        {
+            Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
+            //ChangeState(PlayerState.Idle);
+        }
+        else
+        {
+            // 대화중이라면 마우스입력이 있을때 다음 대화창 생성
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (EventSystem.current.IsPointerOverGameObject())
+                    Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
+            }
+        }
+    }
 
     public void GetDamage()
     {
-        AnimatorStateInfo stateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-        // 04.23 애니메이션이 80% 이상 실행되었을 때 대기 애니메이션으로 바꿀 수 있도록 추가
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        // 애니메이션이 80% 이상 실행되었을 때 대기 애니메이션으로 변경
         if (stateInfo.normalizedTime >= 0.8f || !Player.Instance.data.isDead)
         {
             if (Player.Instance.data.curHp <= 0)
@@ -324,22 +430,26 @@ public class PlayerController : MonoBehaviour
                 ChangeState(PlayerState.Die);
             }
             else
+            {
                 ChangeState(PlayerState.Idle);
+            }
         }
     }
 
-    void PlayerDie()
+    private void PlayerDie()
     {
-        AnimatorStateInfo stateInfo = m_animator.GetCurrentAnimatorStateInfo(0);
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("GetHit"))
             return;
+
+        // die 애니메이션이 끝나는 시점에 플레이어 데이터 세팅
         if(stateInfo.IsName("Die") && stateInfo.normalizedTime >= 0.9f)
         {
             if (Player.Instance.data.isDead == false && Player.Instance.data.curHp <= 0)
             {
                 Player.Instance.data.curHp = 0;
                 Player.Instance.data.isDead = true;
-                m_targetPos = null;
+                targetPos = null;
                 
                 ChangeState(PlayerState.AfterDie);
             }
@@ -349,175 +459,27 @@ public class PlayerController : MonoBehaviour
     public void ReLive()
     {
         gameObject.SetActive(true);
-        Player.Instance.data.curHp = 1000;
+        Player.Instance.data.curHp = Player.Instance.data.maxHp;
         Player.Instance.data.isDead = false;
         ChangeState(PlayerState.Idle);
     }
 
     public void AfterDie()
     {
-        //몬스터 일정시간 반투명코드 추가예정
+        // 몬스터 일정시간 반투명코드 추가 예정
+
         gameObject.SetActive(false);
     }
 
-    void GameInput()
-    {
-        if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0) )
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
-
-            if (Physics.Raycast(ray, out hitInfo))
-            {
-                if (hitInfo.collider.CompareTag("Monster"))
-                {
-                    Debug.Log("몬스터입니다");
-                    // 타겟 지정
-                    m_targetPos = GameObject.Find(hitInfo.collider.gameObject.name).transform;
-                    // 방향
-                    Vector3 dir = m_targetPos.transform.position - transform.position;
-                    // 거리
-                    float distance = dir.magnitude;
-                    dir.Normalize();
-
-                    Rotate(m_targetPos.transform.position);
-                    vEnd = transform.position + dir * (distance - m_attackRange);
-
-                    ChangeState(PlayerState.Move);
-                }
-                else if (hitInfo.collider.CompareTag("Terrain") || hitInfo.collider.CompareTag("Portal"))
-                {
-                    Debug.Log("바닥입니다");
-                    // 공격중일때 이동,회전 불가능
-                    AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
-
-                    if (info.IsName("BaseAttack") || m_animator.IsInTransition(0))
-                        return;
-
-                    m_prevTime = 0;
-                    //m_currState = PlayerState.None;
-
-                    m_point = hitInfo.point;
-                    vEnd = hitInfo.point;
-                    m_targetPos = null;
-                    Rotate(m_point);
-
-                    ChangeState(PlayerState.Move);
-                }
-                else if (hitInfo.collider.GetComponent<PickUpItem>() != null)
-                {
-                    Debug.Log("아이템입니다");
-                    // 누른 객체가 아이템이라면
-                    // 아이템을 타겟으로 하고 
-                    // 아이템위치에 도착하면 줍는 애니메이션 실행.
-                    // PickUpItem에서 PickUp함수 실행
-
-                    m_targetPos = hitInfo.collider.gameObject.transform;
-                    Vector3 dir = m_targetPos.transform.position - transform.position;
-                    float distance = dir.magnitude;
-                    dir.Normalize();
-                    Rotate(hitInfo.point);
-                    vEnd = transform.position + dir * distance;
-
-                    ChangeState(PlayerState.Move);
-                }
-                else if (hitInfo.collider.GetComponent<NPC>() != null)
-                {
-                    Debug.Log("NPC입니다");
-                    // 타겟 지정
-                    m_targetPos = hitInfo.collider.gameObject.transform;
-                    // 방향
-                    Vector3 dir = m_targetPos.transform.position - transform.position;
-                    // 거리
-                    float distance = dir.magnitude;
-                    dir.Normalize();
-
-                    Rotate(m_targetPos.transform.position);
-                    vEnd = transform.position + dir * (distance - talkDistance);
-
-                    ChangeState(PlayerState.Move);
-                }
-            }
-        }
-    }
-
-    void Update()
-    {
-        if (OnShakeCamera)
-            return;
-
-        // 플레이어의 대화상태 체크
-        if (Player.Instance.isTalking)
-            TalkState();
-
-        // 무기변경상태 체크
-        if (isChanging)
-            ChangeAnim();
-
-        if (CheckUI() == false && ActiveMarker == false && isSkillState == false)
-            GameInput();
-
-       switch(m_currState)
-        {
-            case PlayerState.Idle:
-                Idle();
-                break;
-            case PlayerState.Move:
-                MoveState();
-                break;
-            case PlayerState.BaseAttack:
-                AttackState();
-                break;
-            case PlayerState.AttackSkill:
-                AttackSkill();
-                break;
-            case PlayerState.GetDamage:
-                GetDamage();
-                break;
-            case PlayerState.PickUp:
-                PickUp();
-                break;
-            case PlayerState.Die:
-                PlayerDie();
-                break;
-            case PlayerState.AfterDie:
-                AfterDie();
-                break;
-        }
-    }
-
-    public bool CheckUI()
-    {
-        return EventSystem.current.IsPointerOverGameObject();
-    }
-
-    public void ChangeAnim()
-    {
-        AnimatorStateInfo currAnimInfo = m_animator.GetCurrentAnimatorStateInfo(0);
-        if (currAnimInfo.normalizedTime >= 0.9)
-        {
-            m_animator.runtimeAnimatorController = WeaponManager.Instance.currWeaponAnim.runtimeAnimatorController;
-            isChanging = false;
-        }
-    }
-
-    private void TalkState()
-    {
-        if(Input.GetMouseButtonUp(0))
-        {
-            Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
-        }
-    }
-
-    // 맵이동
+    // 맵 이동
     private void OnTriggerEnter(Collider other)
     {
-        if (usingPortal)
+        if (isUsingPortal)
             return;
         // null Exception
         if (other.gameObject.CompareTag("Portal"))
         {
-            usingPortal = true;
+            isUsingPortal = true;
             Portal portal = other.gameObject.GetComponent<Portal>();
             PortalManager.Instance.GetPortalInfo(portal);
 
@@ -525,96 +487,3 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
-
-//// Attack 상태가되면,
-//// 1. attack 시간측정해서
-//// 2. 비율/시간 으로 공격타이밍에 기능실행
-//public void SetAttack()
-//{
-//    if (m_targetPos != null)
-//    {
-//        Monster target = m_targetPos.GetComponent<Monster>();
-
-//        if (target == null)
-//            return;
-
-//        target.baseController.SetTarget(gameObject.transform);
-//        target.SetDamage();
-//        target.baseController.ChangeState(MonsterState.GetDamage);
-//        Debug.Log(target.name + "'s HP : " + target.data.curHp);
-//    }
-//}
-
-//void AttackSkill0()
-//{
-//    AnimatorStateInfo stateinfo = m_animator.GetCurrentAnimatorStateInfo(0);
-//    if (stateinfo.normalizedTime >= 0.9)
-//        ChangeState(PlayerState.Idle);
-//}
-
-//void AttackSkill1()
-//{
-//    AnimatorStateInfo stateinfo = m_animator.GetCurrentAnimatorStateInfo(0);
-//    if (stateinfo.normalizedTime >= 0.9)
-//        ChangeState(PlayerState.Idle);
-//}
-
-//void AttackSkill2()
-//{
-//    AnimatorStateInfo stateinfo = m_animator.GetCurrentAnimatorStateInfo(0);
-//    if (stateinfo.normalizedTime >= 0.9)
-//        ChangeState(PlayerState.Idle);
-//}
-
-
-
-
-// 사용안되는 부분
-//public void SetTarget(Transform target)
-//{
-//    m_target = target;
-//    ChangeState(PlayerState.Move);
-//}
-
-// MoveState의 Monster 발견 조건문에 포함된 부분
-//void TraceTheEnemy()
-//{
-//    //m_prevTime = Time.time;
-//    float distance = Vector3.Distance(transform.position, m_target.transform.position);
-//    transform.position = Vector3.MoveTowards(transform.position, m_target.position, Time.deltaTime * fSpeed);
-
-//    if (distance <= m_attackRange)
-//    {
-//        ChangeState(PlayerState.Attack);
-//    }
-//}
-
-
-// void Attack()
-// {
-//    m_elapsedTime += Time.deltaTime;
-
-//    float distance = Vector3.Distance(transform.position, m_target.position);
-//    if (distance <= m_attackRange)
-//    {
-//        if (m_attackTime <= m_elapsedTime)
-//        {
-//            m_elapsedTime = 0;
-//            m_animator.SetTrigger("Attack");
-//        }
-//    }
-//    else
-//    {
-//        AnimatorStateInfo info = m_animator.GetCurrentAnimatorStateInfo(0);
-//        // 현재 애니메이션이 변경중인 상태가 아니고, 플레이 되고 있는 애니메이션이 Attack이 아닐때
-//        if (!m_animator.IsInTransition(0) && !info.IsTag("Attack"))
-//        {
-//           ChangeState(PlayerState.TraceTheEnemy);
-
-//            if (m_target == null)
-//            {
-//                ChangeState(PlayerState.Idle);
-//            }
-//        }
-//    }
-//}

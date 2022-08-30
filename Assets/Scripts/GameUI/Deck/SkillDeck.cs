@@ -34,9 +34,9 @@ public class SkillDeck : BaseDeck
     {
         SkillManager.Instance.currSelectedSkill = selectedSkill;
         currSelectedSkill = selectedSkill;
-        Player.Instance.playerController.ActiveMarker = true;
-        skillPopup.ShowPopUp(selectedSkill);
         isWaitSkillAct = true;
+        Player.Instance.playerController.isWaitActSkill = isWaitSkillAct;
+        skillPopup.ShowPopUp(selectedSkill);
     }
 
     // 스킬팝업창의 닫기버튼 에 OnClick이벤트추가된 함수
@@ -44,8 +44,9 @@ public class SkillDeck : BaseDeck
     {
         skillPopup.currSkillPopup.SetActive(false);
         skillPopup.currSkillPopup = null;
-        isWaitSkillAct = false;
         currSelectedSkill = null;
+        isWaitSkillAct = false;
+        Player.Instance.playerController.isWaitActSkill = isWaitSkillAct;
         SkillManager.Instance.currSelectedSkill = null;
     }
 
@@ -133,9 +134,9 @@ public class SkillDeck : BaseDeck
                 }
 
                 skillPopup.UnShowSkillMarker();
-                Player.Instance.playerController.ActiveMarker = false;
-                currSelectedSkill = null;
                 isWaitSkillAct = false;
+                Player.Instance.playerController.isWaitActSkill = isWaitSkillAct;
+                currSelectedSkill = null;
             }
         }
     }
@@ -150,7 +151,7 @@ public class SkillDeck : BaseDeck
         if (currSelectedSkill.skillType == SkillType.Area)
         {
             // 임시로 아무 transform 값 적용
-            Player.Instance.playerController.m_targetPos = transform;
+            Player.Instance.playerController.targetPos = transform;
             currSelectedSkill.SetPlaySkill(mousePos);
         }
         else if (currSelectedSkill.skillType == SkillType.Target)
