@@ -5,11 +5,10 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 
-public class UIQuestDialog : BaseGameUI
+public class UIQuestPopup : BaseGameUI
 {
     public TextMeshProUGUI detailText;
     public TextMeshProUGUI titleText;
-    public Image touchPanel;
     public List<Image> rewardImages;
 
     public Sprite rewardMoneyImg;
@@ -19,9 +18,9 @@ public class UIQuestDialog : BaseGameUI
 
     public override void Open(QuestData currQuestData)
     {
-        SoundManager.Instance.Play("Quest/Jingle_Achievement_00");
         isActive = true;
-        gameObject.SetActive(true);
+        SoundManager.Instance.Play("Quest/Jingle_Achievement_00");
+        gameObject.SetActive(isActive);
         SetQuestRewardUI();
         detailText.text = "'" + currQuestData.questName + "'" + "완료";
     }
@@ -74,9 +73,9 @@ public class UIQuestDialog : BaseGameUI
         if (Player.Instance.CloseQuestUIEvent != null)
         {
             Player.Instance.CloseQuestUIEvent(NPCManager.Instance.selectedNpc.npcID, NPCManager.Instance.selectedNpc);
-            //Player.Instance.CloseQuestUIEvent -= Player.Instance.TalkNpc;
+            Player.Instance.CloseQuestUIEvent -= Player.Instance.TalkNpc;
         }
-        gameObject.SetActive(false);
+        gameObject.SetActive(isActive);
     }
 
     private void Update()
@@ -88,17 +87,6 @@ public class UIQuestDialog : BaseGameUI
         {
             if (EventSystem.current.IsPointerOverGameObject())
                 Close();
-
-            //Vector3 mousePosition = Input.mousePosition;
-            //mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
-            //RaycastHit2D hit = Physics2D.Raycast(mousePosition, transform.forward);
-            //Debug.DrawRay(mousePosition, transform.forward * 10, Color.red, 0.3f);
-            //// hit null excetion
-            //if (hit.transform.CompareTag("TouchPanel"))
-            //{
-            //    Close();
-            //}
         }
     }
 }

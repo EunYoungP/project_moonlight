@@ -336,21 +336,19 @@ public class QuestManager : MonoBehaviour
     //퀘스트완료 UI처리
     public void CompleteQuestUI(QuestData currQuestData)
     {
-        // 만약 퀘스트 중인 상태라면
-        // 퀘스트 알림판
-        FloatQuestDialog(currQuestData);
+        FloatQuestPopup(currQuestData);
 
-        // 퀘스트 알림글
-        // 대화 끝나는 시점으로 변경
-        // 델리게이트에 추가
         Player.Instance.QuestNotificationEvent += FloatNoticeQuestText;
         //FloatNoticeQuestText(currQuestData);
     }
 
     // 퀘스트 알림판
-    private void FloatQuestDialog(QuestData currQuestData)
+    private void FloatQuestPopup(QuestData currQuestData)
     {
-        UIGameMng.Instance.uiGameDic[UIGameType.QuestDialog].Open(currQuestData);
+        if (currQuestData.questType == QuestType.TALK)
+            Player.Instance.CloseQuestUIEvent += Player.Instance.TalkNpc;
+
+        UIGameMng.Instance.uiGameDic[UIGameType.QuestPopup].Open(currQuestData);
     }
 
     // 퀘스트 알림글

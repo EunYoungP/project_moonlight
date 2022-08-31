@@ -253,9 +253,6 @@ public class Player : MonoBehaviour
         // 대화 종료 검사
         if (talkData == null)
         {
-            // QuestPopUp창이 Close 될때 
-            // 실행된 TalkNPC 에서 받은 Quest가 없어서
-            // talkData 가 없고, Quest 상태가 아닌데도 실행됨
             EndTalk(npc);
             return;
         }
@@ -269,15 +266,7 @@ public class Player : MonoBehaviour
 
     private bool QuestDialogActive()
     {
-        bool isQuestDialogActive = UIGameMng.Instance.uiGameDic[UIGameType.QuestDialog].GetUIActiveState();
-
-        if (isQuestDialogActive)
-        {
-           //CloseQuestUIEvent += TalkNpc;
-        }
-        else if (!isQuestDialogActive)
-        {
-        }
+        bool isQuestDialogActive = UIGameMng.Instance.uiGameDic[UIGameType.QuestPopup].GetUIActiveState();
         return isQuestDialogActive;
     }
     
@@ -291,11 +280,11 @@ public class Player : MonoBehaviour
     private void EndTalk(NPC npc)
     {
         isTalking = false;
-        inputControlPanel.SetActive(isTalking);
         talkIndex = 0;
         npc.OffChatBox();
         playerCamera.ZoomOut();
         playerController.ChangeState(PlayerState.Idle);
+        inputControlPanel.SetActive(isTalking);
 
         if (GetItemWhenEndTalk != null)
         {

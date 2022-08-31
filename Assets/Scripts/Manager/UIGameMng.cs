@@ -15,7 +15,7 @@ public enum UIGameType
     SkillBook,
 
     Notification,
-    QuestDialog,
+    QuestPopup,
     SceneDesc,
 }
 
@@ -50,7 +50,7 @@ public class UIGameMng : MonoBehaviour
         AddScript<UIDeck>(UIGameType.Deck, true);
         AddScript<UISkillBook>(UIGameType.SkillBook);
         AddScript<UINotification>(UIGameType.Notification);
-        AddScript<UIQuestDialog>(UIGameType.QuestDialog);
+        AddScript<UIQuestPopup>(UIGameType.QuestPopup);
         AddScript<UISceneDesc>(UIGameType.SceneDesc);
     }
 
