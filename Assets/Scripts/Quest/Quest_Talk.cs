@@ -38,6 +38,6 @@ public class Quest_Talk : Quest
         NPCManager.Instance.selectedNpc.CompleteQuestJump();
         Player.Instance.CompleteQuest(QuestManager.Instance.GetCurrQuestData());
         RemoveQuest();
-        QuestManager.Instance.CheckQuest(NPCManager.Instance.selectedNpc.npcID);
+        QuestManager.Instance.CheckQuestComplete(NPCManager.Instance.selectedNpc.npcID);
     }
 }

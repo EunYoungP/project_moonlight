@@ -13,6 +13,7 @@ public enum UIGameType
     DetailPage,
     Deck,
     SkillBook,
+    Minimap,
 
     Notification,
     QuestPopup,
@@ -52,6 +53,7 @@ public class UIGameMng : MonoBehaviour
         AddScript<UINotification>(UIGameType.Notification);
         AddScript<UIQuestPopup>(UIGameType.QuestPopup);
         AddScript<UISceneDesc>(UIGameType.SceneDesc);
+        AddScript<UIMinimap>(UIGameType.Minimap, true);
     }
 
     // dictionary에 script들을 추가하는 함수
@@ -115,6 +117,7 @@ public class UIGameMng : MonoBehaviour
         GetUI<UIMenu>(UIGameType.Menu).gameObject.SetActive(value);
         GetUI<UIStat>(UIGameType.Stat).gameObject.SetActive(value);
         GetUI<UIDeck>(UIGameType.Deck).gameObject.SetActive(value);
+        GetUI<UIMinimap>(UIGameType.Minimap).gameObject.SetActive(value);
     }
 
     public void LevelUpUpdate()

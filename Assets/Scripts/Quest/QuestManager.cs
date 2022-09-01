@@ -208,7 +208,7 @@ public class QuestManager : MonoBehaviour
     }
 
     // QuestComplete 시점에 실행
-    public void CheckQuest(int npcId)
+    public void CheckQuestComplete(int npcId)
     {
         // 진행중인 퀘스트 없음
         if (questProgressType == QuestProgressType.BEFORE)

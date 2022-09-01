@@ -47,6 +47,6 @@ public class Quest_MonsterHunt : Quest
 
         Player.Instance.CompleteQuest(QuestManager.Instance.GetCurrQuestData());
         RemoveQuest();
-        QuestManager.Instance.CheckQuest(NPCManager.Instance.selectedNpc.npcID);
+        QuestManager.Instance.CheckQuestComplete(NPCManager.Instance.selectedNpc.npcID);
     }
 }

@@ -52,14 +52,14 @@ public class SkillManager : MonoBehaviour
             if (weaponState == skill.UseWeaponState)
             {
                 equalWeaponSkill.Add(skill);
-                AddDicSkillColliders(skill);
+                AddSkillCollidersDic(skill);
             }
         }
         equalWeaponSkill = equalWeaponSkill.OrderBy(Skill => Skill.skillNum).ToList(); ;
         skillDic[weaponState] = (equalWeaponSkill);
     }
 
-    private void AddDicSkillColliders(Skill skill)
+    private void AddSkillCollidersDic(Skill skill)
     {
         if(!skillColliderDic.ContainsKey(skill))
         {
