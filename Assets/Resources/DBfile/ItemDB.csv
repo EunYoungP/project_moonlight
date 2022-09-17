@@ -1,0 +1,44 @@
+#ItemID,Model,Icon,ItemType,DetailType,Name,Weight,Grade,Tier,Bind
+0,안타레스 모자,안타레스 모자,Equipment,Helmet,안타레스 모자,10,영웅,2,FALSE
+1,안타레스 갑옷,안타레스 갑옷,Equipment,Armor,안타레스 갑옷,12,영웅,2,FALSE
+2,안타레스 장갑,안타레스 장갑,Equipment,Gloves,안타레스 장갑,4,영웅,2,FALSE
+3,안타레스 망토,안타레스 망토,Equipment,Cloak,안타레스 망토,3,영웅,2,FALSE
+4,지배자 모자,지배자 모자,Equipment,Helmet,지배자 모자,10,전설,1,FALSE
+5,지배자 갑옷,지배자 갑옷,Equipment,Armor,지배자 갑옷,12,전설,1,FALSE
+6,지배자 장갑,지배자 장갑,Equipment,Gloves,지배자 장갑,4,전설,1,FALSE
+7,지배자 망토,지배자 망토,Equipment,Cloak,지배자 망토,3,전설,1,FALSE
+8,그림자 목걸이,그림자 목걸이,Accessories,Necklace,그림자 목걸이,1,영웅,3,FALSE
+9,그림자 귀걸이,그림자 귀걸이,Accessories,Earring,그림자 귀걸이,1,영웅,3,FALSE
+10,그림자 반지,그림자 반지,Accessories,Ring,그림자 반지,1,영웅,3,FALSE
+11,발두르 목걸이,발두르 목걸이,Accessories,Necklace,발두르 목걸이,1,전설,1,FALSE
+12,발두르 귀걸이,발두르 귀걸이,Accessories,Earring,발두르 귀걸이,1,전설,1,FALSE
+13,발두르 반지,발두르 반지,Accessories,Ring,발두르 반지,1,전설,1,FALSE
+14,순간 이동 그림,순간 이동 그림,Use,Scroll,순간 이동 그림,0,일반,,TRUE
+15,혼돈의 입구 입장권,혼돈의 입구 입장권,Use,Scroll,혼돈의 입구 입장권,0,일반,,TRUE
+16,귀환 주문서,귀환 주문서,Use,Scroll,귀환 주문서,0,일반,,TRUE
+17,HP 회복 물약,HP 회복 물약,Use,Potion,HP 회복 물약,0,일반,,TRUE
+18,MP 회복 물약,MP 회복 물약,Use,Potion,MP 회복 물약,0,일반,,TRUE
+19,빵,빵,Food,Food,빵,1,일반,,FALSE
+20,무지개송어,무지개송어,Food,Food,무지개송어,2,일반,,FALSE
+21,두툼한 고기 덩어리,두툼한 고기 덩어리,Food,Food,두툼한 고기 덩어리,1,고급,,FALSE
+22,광천수,광천수,Food,Food,광천수,1,희귀,,FALSE
+23,예리한 발톱,예리한 발톱,Ingredient,Loot,예리한 발톱,1,고급,,FALSE
+24,심장석,심장석,Ingredient,Loot,심장석,1,일반,,FALSE
+25,여우 조각상,여우 조각상,Etc,Statue,여우 조각상,10,일반,,FALSE
+26,은빛사냥꾼의 화살,은빛사냥꾼의 화살,Use,Arrow,은빛사냥꾼의 화살,0,영웅,,FALSE
+27,필멸의 화살,필멸의 화살,Use,Arrow,필멸의 화살,0,전설,,FALSE
+28,바람사냥꾼 단궁,바람사냥꾼 단궁,Weapon,Bow,바람사냥꾼 단궁,20,영웅,2,FALSE
+29,투발카인 활,투발카인 활,Weapon,Bow,투발카인 활,20,전설,3,FALSE
+30,토벌대 방패,토벌대 방패,Weapon,Shield,토벌대 방패,22,일반,1,FALSE
+31,숙련자 방패,숙련자 방패,Weapon,Shield,숙련자 방패,22,고급,2,FALSE
+32,상급기사 방패,상급기사 방패,Weapon,Shield,상급기사 방패,22,희귀,2,FALSE
+33,그림자 기사 방패,그림자 기사 방패,Weapon,Shield,그림자 기사 방패,22,영웅,3,FALSE
+34,바탈리의 수호,바탈리의 수호,Weapon,Shield,바탈리의 수호,22,전설,3,FALSE
+35,마굴 개척단 검,마굴 개척단 검,Weapon,Sword,마굴 개척단 검,14,일반,2,FALSE
+36,발두르의 검,발두르의 검,Weapon,DoubleSword,발두르의 검,14,전설,1,FALSE
+37,그림자 기사 검,그림자 기사 검,Weapon,Sword,그림자 기사 검,14,영웅,3,FALSE
+38,바탈리의 일격,바탈리의 일격,Weapon,DoubleSword,바탈리의 일격,14,전설,3,FALSE
+39,스피렌의 광휘,스피렌의 광휘,Weapon,MagicWand,스피렌의 광휘,12,전설,3,FALSE
+40,달빛사제 지팡이,달빛사제 지팡이,Weapon,MagicWand,달빛사제 지팡이,12,영웅,1,FALSE
+41,바탈리의 자비,바탈리의 자비,Weapon,TwoHandSword,바탈리의 자비,24,전설,3,FALSE
+42,바탈리의 징벌,바탈리의 징벌,Weapon,TwoHandSword,바탈리의 징벌,14,전설,3,FALSE
