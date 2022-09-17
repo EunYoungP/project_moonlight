@@ -25,11 +25,11 @@ public class PlayerController : MonoBehaviour
     public Animator animator { get; set; }
 
     public Transform targetPos { get; set; }
-    public float attackRange {get{ return 2.5f;}}
+    public float attackRange {get{ return 2f;}}
     private float speed = 10f;
 
     private float prevTime = 0;
-    public float attackInterval;
+    private float attackInterval = 1.5f;
     private Vector3 destination;
 
     public bool isWaitActSkill { get; set; }
@@ -38,13 +38,22 @@ public class PlayerController : MonoBehaviour
     public bool isUsingPortal { get; set; }
 
     private NPC talkingNpc;
-    private float talkDistance = 3.0f;
+    private float talkDistance = 2.5f;
 
     private PickUpItem playerPickUpItem;
     private PlayerInput playerInput;
 
+    // MouseInputID
+    public int pointerID { get; set; }
+
     public void Init()
     {
+#if UNITY_EDITOR
+        pointerID = -1;
+#elif UNITY_ANDROID
+        pointerID = 0;
+#endif
+
         animator = GetComponent<Animator>();
         ChangeState(PlayerState.Idle);
 
@@ -58,8 +67,32 @@ public class PlayerController : MonoBehaviour
         this.targetPos = targetPos;
     }
 
-    #region FSM
-    #region 상태 전이
+#region FSM
+
+    private void Update()
+    {
+        if (!IsExceptionInput())
+            playerInput.GameInput();
+
+        ActionState();
+    }
+
+    private bool IsExceptionInput()
+    {
+        bool uiInput = EventSystem.current.IsPointerOverGameObject(pointerID);
+        bool loadingState = SceneMng.Instance.LoadingState();
+        if (uiInput == true
+            || isWaitActSkill == true
+            || isSkillState == true
+            || isShakingCamera == true
+            || loadingState == true)
+        {
+            return true;
+        }
+        return false;
+    }
+
+#region 상태 전이
     public void ChangeState(PlayerState state)
     {
         if (currState == state && currState != PlayerState.BaseAttack)
@@ -112,72 +145,50 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-    #endregion
+#endregion
 
-    private void Update()
-    {
-        if (!IsExceptionInput())
-           playerInput.GameInput();
-
-        ActionState();
-    }
-
-    private bool IsExceptionInput()
-    {
-        bool uiInput = EventSystem.current.IsPointerOverGameObject();
-        bool loadingState = SceneMng.Instance.LoadingState();
-        if (uiInput
-            || isWaitActSkill
-            || isSkillState
-            || isShakingCamera
-            || loadingState)
-        {
-            return true;
-        }
-        return false;
-    }
-
-    #region 상태
+#region 상태
     private void ActionState()
     {
         switch (currState)
         {
             case PlayerState.Idle:
-                Idle();
+                StateIdle();
                 break;
             case PlayerState.Move:
-                MoveState();
+                StateMove();
                 break;
             case PlayerState.BaseAttack:
-                AttackState();
+                StateBaseAttack();
                 break;
             case PlayerState.SkillAttack:
-                AttackSkill();
+                StateSkillAttack();
                 break;
             case PlayerState.GetDamage:
-                GetDamage();
+                StateGetDamage();
                 break;
             case PlayerState.PickUp:
-                PickUp();
+                StatePickUp();
                 break;
             case PlayerState.ChangeWeapon:
-                ChangeWeapon();
+                StateChangeWeapon();
                 break;
             case PlayerState.Talk:
-                TalkState();
+                StateTalk();
                 break;
             case PlayerState.Die:
-                PlayerDie();
+                StateDie();
                 break;
             case PlayerState.AfterDie:
-                AfterDie();
+                StateAfterDie();
                 break;
         }
     }
-    #endregion
-    #endregion
+#endregion
 
-    #region 스킬
+#endregion
+
+#region 스킬
     private void CheckSkill()
     {
         Skill selectedSkill = SkillManager.Instance.currSelectedSkill;
@@ -203,7 +214,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void AttackSkill()
+    private void StateSkillAttack()
     {
         if (!isSkillState)
         {
@@ -240,9 +251,9 @@ public class PlayerController : MonoBehaviour
 
         ChangeState(PlayerState.SkillAttack);
     }
-    #endregion
+#endregion
 
-    #region 이동
+#region 이동
 
     public void Rotate(Vector3 targetPos)
     {
@@ -258,14 +269,14 @@ public class PlayerController : MonoBehaviour
         else
             transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, Time.deltaTime * speed);
     }
-    #endregion
+#endregion
 
-    private void Idle()
+    private void StateIdle()
     {
         Player.Instance.rigid.velocity = Vector3.zero;
     }
 
-    private void MoveState()
+    private void StateMove()
     {
         Move();
 
@@ -345,7 +356,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 타겟과 플레이어 거리측정, 공격 속도 조절
-    private void AttackState()
+    private void StateBaseAttack()
     {
         // 공격 실행 대기시간이 끝난상태
         if ((Time.time - prevTime) >= attackInterval)
@@ -375,7 +386,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void PickUp()
+    private void StatePickUp()
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
 
@@ -385,13 +396,9 @@ public class PlayerController : MonoBehaviour
                 playerPickUpItem.PickUp();
                 ChangeState(PlayerState.Idle);
             }
-        else
-        {
-            Debug.Log("픽업 애니메이션이 끝나는 시점이 아닙니다.");
-        }
     }
 
-    private void ChangeWeapon()
+    private void StateChangeWeapon()
     {
         AnimatorStateInfo currAnimInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (currAnimInfo.normalizedTime >= 0.9)
@@ -401,7 +408,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void TalkState()
+    private void StateTalk()
     {
         if(!Player.Instance.isTalking)
         {
@@ -413,13 +420,13 @@ public class PlayerController : MonoBehaviour
             // 대화중이라면 마우스입력이 있을때 다음 대화창 생성
             if (Input.GetMouseButtonDown(0))
             {
-                if (EventSystem.current.IsPointerOverGameObject())
+                if (EventSystem.current.IsPointerOverGameObject(pointerID))
                     Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
             }
         }
     }
 
-    public void GetDamage()
+    public void StateGetDamage()
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         // 애니메이션이 80% 이상 실행되었을 때 대기 애니메이션으로 변경
@@ -436,7 +443,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayerDie()
+    private void StateDie()
     {
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
         if (stateInfo.IsName("GetHit"))
@@ -456,7 +463,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void ReLive()
+    public void StateReLive()
     {
         gameObject.SetActive(true);
         Player.Instance.data.curHp = Player.Instance.data.maxHp;
@@ -464,7 +471,7 @@ public class PlayerController : MonoBehaviour
         ChangeState(PlayerState.Idle);
     }
 
-    public void AfterDie()
+    public void StateAfterDie()
     {
         // 몬스터 일정시간 반투명코드 추가 예정
 

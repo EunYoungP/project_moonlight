@@ -71,7 +71,7 @@ public class SceneMng : MonoBehaviour
         {
             sceneDic[currScene].Exit();
             sceneDic[nextScene].LoadScene(nextScene);
-            StartCoroutine(LoadSceneWhitoutLoading(nextScene));
+            StartCoroutine(LoadSceneWithoutLoading(nextScene));
         }
     }
 
@@ -129,7 +129,7 @@ public class SceneMng : MonoBehaviour
     }
     
     // 로딩씬을 사용안하는 씬이동
-    IEnumerator LoadSceneWhitoutLoading(SceneState nextScene)
+    IEnumerator LoadSceneWithoutLoading(SceneState nextScene)
     {
         AsyncOperation operation =  SceneManager.LoadSceneAsync(nextScene.ToString());
 

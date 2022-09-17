@@ -13,7 +13,10 @@ public class csvReader : MonoBehaviour
 {
     public List<Dictionary<string, string>> Read(string file)
     {
-        StreamReader sr = new StreamReader(Application.dataPath + "/DBfile/" + file);
+        string path = "DBfile/" + file;
+        //StreamReader sr = new StreamReader(Application.dataPath + "/Resources/DBfile/" + file);
+        TextAsset sourcefile = Resources.Load<TextAsset>(path);
+        StringReader sr = new StringReader(sourcefile.text);
         List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
         List<string> subject = new List<string>();
@@ -42,12 +45,16 @@ public class csvReader : MonoBehaviour
             }
             list.Add(dic);
         }
+        sr.Close();
         return list;
     }
 
     public List<string> ReadSubject(string file)
     {
-        StreamReader sr = new StreamReader(Application.dataPath + "/DBfile/" + file);
+        string path = "DBfile/" + file;
+        //StreamReader sr = new StreamReader(Application.dataPath + "/Resources/DBfile/" + file);
+        TextAsset sourcefile = Resources.Load<TextAsset>(path);
+        StringReader sr = new StringReader(sourcefile.text);
         List<string> subject = new List<string>();
 
         while (true)
@@ -63,6 +70,7 @@ public class csvReader : MonoBehaviour
                     subject.Add(_subject[i]);
                 }
                 subject[0] = subject[0].Substring(1);
+                sr.Close();
                 return subject;
             }
         }

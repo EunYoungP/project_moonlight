@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Effect : MonoBehaviour
 {
-    public PLAYER_EFFECT_TYPE effectType;
+    public PlayerEffectType effectType;
     public Skill effectSkill;
     public int effectNum;
 

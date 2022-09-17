@@ -14,6 +14,7 @@ public class TownScene : BaseScene
     public override void Enter(SceneState currScene)
     {
         base.Enter(currScene);
+        UIGameMng.Instance.GetUI<UIMinimap>(UIGameType.Minimap).ChangeMapName(MapManager.Instance.currMap);
         SoundManager.Instance.Play("BGM/Enchanted garden", SOUND.Bgm);
         string currMapName = MapManager.Instance.currMap.mapName;
         UIGameMng.Instance.uiGameDic[UIGameType.SceneDesc].Open(currMapName);

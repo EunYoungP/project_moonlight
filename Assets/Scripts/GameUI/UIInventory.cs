@@ -50,7 +50,10 @@ public class UIInventory : BaseGameUI
         if (SLManager.Instance.curInventoryItem.Count > 0)
             LoadItems = SLManager.Instance.curInventoryItem;
         else
+        {
             LoadItems = SLManager.Instance.inventoryInitItem;
+            SLManager.Instance.curInventoryItem = LoadItems;
+        }
 
         foreach(ItemObject itemobj in LoadItems)
         {

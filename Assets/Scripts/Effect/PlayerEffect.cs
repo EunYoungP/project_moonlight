@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum PLAYER_EFFECT_TYPE
+public enum PlayerEffectType
 {
     SKILL,
     LEVELUP,
@@ -34,7 +34,7 @@ public class PlayerEffect : EffectBase
         Skill selectedSkill = SkillManager.Instance.currSelectedSkill;
         foreach(Effect effect in playerEffects)
         {
-            if(effect.effectType == PLAYER_EFFECT_TYPE.SKILL &&
+            if(effect.effectType == PlayerEffectType.SKILL &&
                 selectedSkill == effect.effectSkill)
             {
                 if(effect.effectNum == effectNum)
@@ -49,7 +49,7 @@ public class PlayerEffect : EffectBase
     {
         foreach(Effect effect in playerEffects)
         {
-            if (effect.effectType == PLAYER_EFFECT_TYPE.LEVELUP)
+            if (effect.effectType == PlayerEffectType.LEVELUP)
             {
                 effect.gameObject.SetActive(true);
                 ParticleSystem vfx = effect.gameObject.GetComponent<ParticleSystem>();

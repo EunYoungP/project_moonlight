@@ -1,5 +1,0 @@
-24	심장석	심장석	Ingredient	Loot	심장석	1	일반	0	FALSE	
-21	두툼한 고기 덩어리	두툼한 고기 덩어리	Food	Food	두툼한 고기 덩어리	1	고급	0	FALSE	
-17	HP 회복 물약	HP 회복 물약	Use	Potion	HP 회복 물약	0	일반	0	TRUE	
-18	MP 회복 물약	MP 회복 물약	Use	Potion	MP 회복 물약	0	일반	0	TRUE	
-19	빵	빵	Food	Food	빵	1	일반	0	FALSE	

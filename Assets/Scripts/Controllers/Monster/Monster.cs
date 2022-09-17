@@ -13,7 +13,7 @@ public class Monster : MonoBehaviour
     public string keyCode;
     public Character data;
     
-    public Animator m_animator;
+    public Animator animator;
     public float viewDist = 6f;
 
     // [HpBar]
@@ -32,12 +32,12 @@ public class Monster : MonoBehaviour
     // [Map]
     private MAP mapType;
 
-    void Start()
+    private void Start()
     {
         keyCode = gameObject.name;
         data = SLManager.Instance.LoadGolemData(mapType, keyCode);
         monsterType = MonsterType.Golem;
-        m_animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
         baseController = GetComponent<BaseController>();
 
         CreateMonsterHpBar();

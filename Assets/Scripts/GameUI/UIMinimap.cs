@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UIMinimap : BaseGameUI
 {
+    public TextMeshProUGUI curMapName;
+
     public override void Open()
     {
         base.Open();
@@ -16,11 +19,8 @@ public class UIMinimap : BaseGameUI
         gameObject.SetActive(false);
     }
 
-    public override void Init()
+    public void ChangeMapName(Map currmap)
     {
-    }
-
-    public override void LevelUpUpdate()
-    {
+        curMapName.text = currmap.mapName;
     }
 }

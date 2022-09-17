@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum MAP
 {
@@ -38,10 +39,10 @@ public class MapManager : MonoBehaviour
         Map currSceneMap = FindObjectOfType<Map>();
         if (currSceneMap == null) return;
 
-        if(mapDic.ContainsKey(nextSceneState)) return;
+        if(!mapDic.ContainsKey(nextSceneState)) 
+            mapDic.Add(nextSceneState, currSceneMap.terrainList);
 
         currSceneMap.Init();
-        mapDic.Add(nextSceneState, currSceneMap.terrainList);
         currMap = currSceneMap;
     }
 }

@@ -34,6 +34,7 @@ public class NPCManager : MonoBehaviour
         }
     }
 
+    public Action<NPCProgressType> ChangeNPCProgressTypeEvent;      //npc 진행상태 변화 이벤트
     private NPCProgressType _npcProgressType = NPCProgressType.BEFORE;
     public NPCProgressType npcProgressType
     {
@@ -48,7 +49,6 @@ public class NPCManager : MonoBehaviour
                 ChangeNPCProgressTypeEvent(_npcProgressType);
         }
     }
-    public Action<NPCProgressType> ChangeNPCProgressTypeEvent;      //npc 진행상태 변화 이벤트
 
     private void Init()
     {

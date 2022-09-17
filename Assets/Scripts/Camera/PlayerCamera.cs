@@ -16,8 +16,8 @@ public class PlayerCamera : MonoBehaviour
     // 줌 효과
     private bool isMoving;
     private Transform beforeZoomTr;
-    private float rotateTime = 1.0f;
-    private float zoomTime = 0.5f;
+    private float elapsedTime;
+    private float zoomTime = 1f;
     private float distance;
 
     public void CameraInit()
@@ -57,9 +57,11 @@ public class PlayerCamera : MonoBehaviour
         if (target == null)
             yield return null;
 
+        elapsedTime = 0;
         while( Camera.main.fieldOfView != 40)
         {
-            float FOVvalue = Mathf.Lerp(Camera.main.fieldOfView,40, zoomTime);
+            elapsedTime += Time.deltaTime;
+            float FOVvalue = Mathf.Lerp(Camera.main.fieldOfView,40, zoomTime/elapsedTime);
             Camera.main.fieldOfView = FOVvalue;
             Camera.main.fieldOfView = Mathf.Clamp(FOVvalue, 40, 80);
             yield return null;
@@ -78,9 +80,11 @@ public class PlayerCamera : MonoBehaviour
 
     private IEnumerator ZoomOutAction()
     {
+        elapsedTime = 0;
         while( Camera.main.fieldOfView != 60)
         {
-            float FOVvalue = Mathf.Lerp(Camera.main.fieldOfView, 60, zoomTime);
+            elapsedTime += Time.deltaTime;
+            float FOVvalue = Mathf.Lerp(Camera.main.fieldOfView, 60, zoomTime/elapsedTime);
             Camera.main.fieldOfView = FOVvalue;
             Camera.main.fieldOfView = Mathf.Clamp(FOVvalue, 40, 80);
             yield return null;

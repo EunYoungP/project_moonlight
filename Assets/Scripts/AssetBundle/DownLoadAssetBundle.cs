@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
+using UnityEngine.Networking;
 
 public class DownLoadAssetBundle : MonoBehaviour
 {
@@ -11,8 +12,9 @@ public class DownLoadAssetBundle : MonoBehaviour
     [SerializeField]
     private int version;
 
-    private string atalsName;
+    private string atlasName;
     private WWW loader;
+    private UnityWebRequest www;
 
     [SerializeField]
     private Sprite loadSprite;
@@ -36,9 +38,9 @@ public class DownLoadAssetBundle : MonoBehaviour
 
     public void Init()
     {
-        atalsName = "SkillIconSpriteAtlas";
-        BundleURL = "file://" + Application.dataPath + "/AssetBundles/bundle/skilliconassetbundle";
-        StartCoroutine(DownloadAndCache());
+        atlasName = "SkillIconSpriteAtlas";
+        BundleURL = "https://drive.google.com/file/d/1Lges1NYpL__EpV3Si3mhyPTPB8Eq8SLU/view?usp=sharing";
+        //StartCoroutine(DownloadAndCache());
         //LoadSkillSprite("DoubleSword_Skill0");
     }
 
@@ -50,7 +52,7 @@ public class DownLoadAssetBundle : MonoBehaviour
 
         // 캐시에 에셋번들이 있다면 로드,
         // 없다면 다운로드하여 캐시폴더에 다운로드
-        using (WWW loader = WWW.LoadFromCacheOrDownload(BundleURL, version))
+        using (loader = WWW.LoadFromCacheOrDownload(BundleURL, version))
         {
             yield return loader;
             if (loader.error != null)
@@ -65,30 +67,69 @@ public class DownLoadAssetBundle : MonoBehaviour
 
     public void SetSkillBookSlotSprite()
     {
-        StartCoroutine(LoadSkillBookSlotSprites());
+        //StartCoroutine(LoadSkillBookSlotSprites());
     }
 
     public void SetSkillSlotSprite()
     {
-        StartCoroutine(LoadSkillSlotSprites());
+        //StartCoroutine(LoadSkillSlotSprites());
+    }
+
+    private string ExtractFileID(string url)
+    {
+        url = url.Replace("https://drive.google.com/file/d/", "");
+        url = url.Replace("/view?usp=sharing", "");
+        return url;
     }
 
     IEnumerator LoadSkillBookSprites()
     {
-        if (loader == null)
-            loader = new WWW(BundleURL);
+        var gdID = ExtractFileID(BundleURL);
+        var prefix = "http://drive.google.com/uc?export=view&id=";
+        BundleURL = prefix+gdID;
 
-        yield return loader;
+        SpriteAtlas atlas = null;
 
-        SpriteAtlas atlas = loader.assetBundle.LoadAsset<SpriteAtlas>(atalsName);
+        www = UnityWebRequestAssetBundle.GetAssetBundle(BundleURL);
+        yield return www.SendWebRequest();
 
-        foreach(SkillPanel skillPanel in UIGameMng.Instance.GetUI<UISkillBook>(UIGameType.SkillBook).panelParent.skillPanels)
+        if(www.isNetworkError || www.isHttpError)
         {
-            skillPanel.skillIcon.sprite = atlas.GetSprite(skillPanel.skill.skillIcon);
+            Debug.Log("오류 : " + www.error);
         }
+        else
+        {
+            // null exception
+            AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
+            atlas = bundle.LoadAsset<SpriteAtlas>(atlasName);
+
+            if(atlas!= null )
+            {
+                foreach (SkillPanel skillPanel in UIGameMng.Instance.GetUI<UISkillBook>(UIGameType.SkillBook).panelParent.skillPanels)
+                {
+                    skillPanel.skillIcon.sprite = atlas.GetSprite(skillPanel.skill.skillIcon);
+                }
+            }
+            else
+            {
+                Debug.Log("아틀라스에 값이 할당되지 않았습니다.");
+            }
+        }
+
+        //if (www == null)
+        //    www = new WWW(BundleURL);
+
+        //yield return www;
+
+        //SpriteAtlas atlas = www.assetBundle.LoadAsset<SpriteAtlas>(atalsName);
+
+        //foreach(SkillPanel skillPanel in UIGameMng.Instance.GetUI<UISkillBook>(UIGameType.SkillBook).panelParent.skillPanels)
+        //{
+        //    skillPanel.skillIcon.sprite = atlas.GetSprite(skillPanel.skill.skillIcon);
+        //}
         //loadSprite = atlas.GetSprite(spriteName);
     }
-    
+
     IEnumerator LoadSkillBookSlotSprites()
     {
         if (loader == null)
@@ -96,7 +137,7 @@ public class DownLoadAssetBundle : MonoBehaviour
 
         yield return loader;
 
-        SpriteAtlas atlas = loader.assetBundle.LoadAsset<SpriteAtlas>(atalsName);
+        SpriteAtlas atlas = loader.assetBundle.LoadAsset<SpriteAtlas>(atlasName);
 
         foreach (SkillBookSlot skillBookSlot in UIGameMng.Instance.GetUI<UISkillBook>(UIGameType.SkillBook).skillBookDeck.skillBookSlots)
         {
@@ -113,7 +154,7 @@ public class DownLoadAssetBundle : MonoBehaviour
 
         yield return loader;
 
-        SpriteAtlas atlas = loader.assetBundle.LoadAsset<SpriteAtlas>(atalsName);
+        SpriteAtlas atlas = loader.assetBundle.LoadAsset<SpriteAtlas>(atlasName);
 
         foreach (SkillSlot skillSlot in UIGameMng.Instance.GetUI<UIDeck>(UIGameType.Deck).GetScript<SkillDeck>(DeckType.SkillDeck).SkillSlots)
         {

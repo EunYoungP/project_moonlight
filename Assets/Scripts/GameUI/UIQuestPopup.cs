@@ -83,10 +83,7 @@ public class UIQuestPopup : BaseGameUI
         if (!isActive)
             return;
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (EventSystem.current.IsPointerOverGameObject())
-                Close();
-        }
+        if (EventSystem.current.IsPointerOverGameObject(Player.Instance.playerController.pointerID))
+            Close();
     }
 }

@@ -43,8 +43,8 @@ public class ItemDB : csvReader
     public void ReadItem()
     {
         List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-        subjectStr = ReadSubject("ItemDB.csv");
-        list = Read("ItemDB.csv");
+        subjectStr = ReadSubject("ItemDB");
+        list = Read("ItemDB");
 
         // 아이템의 개수
         // csv파일에서 받아온 정보들을 Item에 담아서

@@ -81,7 +81,7 @@ public class SkillDeck : BaseDeck
         // 스킬사용 대기상태
         if (isWaitSkillAct)
         {
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current.IsPointerOverGameObject(Player.Instance.playerController.pointerID)) return;
 
             if (Input.GetMouseButtonDown(0))
             {

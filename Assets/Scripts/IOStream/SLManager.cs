@@ -171,12 +171,19 @@ public class SLManager : MonoBehaviour
         //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jdata);
         //string format = System.Convert.ToBase64String(bytes);
 
-        File.WriteAllText(Application.dataPath + "/CharacterData.json", jdata);
+        File.WriteAllText(Application.dataPath + "/Resources/DBfile/CharacterData.json", jdata);
     }
 
     public void LoadData()
     {
-        string jdata = File.ReadAllText(Application.dataPath + "/CharacterData.json");
+        string jdata = string.Empty;
+        string path = "DBfile/CharacterData.json";
+        TextAsset data = (TextAsset)Resources.Load(path, typeof(TextAsset));
+        if(data != null)
+        {
+            jdata = data.text;
+        }
+        //string jdata = File.ReadAllText(Application.dataPath + "/Resources/DBfile/CharacterData.json");
 
         // 암호해독
         // 오류발생부분
@@ -197,11 +204,24 @@ public class SLManager : MonoBehaviour
             return;
         }
 
-        string[] line = File.ReadAllLines(Application.dataPath + "/DBfile/InitInventoryData.txt");
+        //string[] line = File.ReadAllLines(Application.dataPath + "/Resources/DBfile/InitInventoryData.txt");
+        TextAsset sourcefile = Resources.Load<TextAsset>("DBfile/InitInventoryData");
+        StringReader sr = new StringReader(sourcefile.text);
+        string[] lines = new string[5];
 
-        for(int i =0; i<line.Length; i++)
+        int index = 0;
+        while(true)
         {
-            string[] row = line[i].Split('\t');
+            string line = sr.ReadLine();
+            if (line == null) break;
+
+            lines[index] = line;
+            index++;
+        }
+
+        for(int i =0; i< lines.Length; i++)
+        {
+            string[] row = lines[i].Split('\t');
             List<string> rowList = row.ToList();
 
             Item item = new Item();
@@ -214,13 +234,21 @@ public class SLManager : MonoBehaviour
 
     public void SaveInventory()
     {
+        string path = Application.persistentDataPath + "Resrouces/DBfile/InventoryDB.json";
+        if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
         string jdata = JsonConvert.SerializeObject(curInventoryItem);
-        File.WriteAllText(Application.dataPath + "/DBfile/InventoryDB.json", jdata);
+        File.WriteAllText(path, jdata);
     }
 
     public void LoadInventory()
     {
-        string jdata = File.ReadAllText(Application.dataPath + "/DBfile/InventoryDB.json");
+        string path = Application.persistentDataPath + "Resources/DBfile/InventoryDB.json";
+        if (!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
+        string jdata = File.ReadAllText(path);
         curInventoryItem = JsonConvert.DeserializeObject<List<ItemObject>>(jdata);
     }
 
