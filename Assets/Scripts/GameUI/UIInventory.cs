@@ -14,6 +14,7 @@ public class UIInventory : BaseGameUI
     public List<Button> tabBtns;
     public int selectedTab;
     public int space = 20;
+    private bool isInitalize = true;
 
     public override void Init()
     {
@@ -24,7 +25,6 @@ public class UIInventory : BaseGameUI
         tabBtns = category.tabBtns;
         TabAddListener();
         InitTab();
-        InitItem();
     }
 
     // 카테고리 버튼 리스너 연결
@@ -43,22 +43,25 @@ public class UIInventory : BaseGameUI
         Categorize();
     }
 
-    private void InitItem()
+    public void InitItem()
     {
-        List<ItemObject> LoadItems = new List<ItemObject>();
+        if (!isInitalize)
+            return;
 
-        if (SLManager.Instance.curInventoryItem.Count > 0)
-            LoadItems = SLManager.Instance.curInventoryItem;
-        else
-        {
-            LoadItems = SLManager.Instance.inventoryInitItem;
-            SLManager.Instance.curInventoryItem = LoadItems;
-        }
+        List<ItemObject> LoadItems = new List<ItemObject>();
+        LoadItems = SLManager.Instance.curInventoryItem;
 
         foreach(ItemObject itemobj in LoadItems)
         {
-            AddItem(itemobj);
+            if (inventoryItems.Count > space)
+            {
+                Debug.Log("가방이 꽉 찼습니다.");
+                return;
+            }
+            inventoryItems.Add(itemobj);
         }
+        Categorize();
+        isInitalize = false;
     }
 
     // 장착중 표시제어
@@ -97,7 +100,6 @@ public class UIInventory : BaseGameUI
     }
 
     // UIMenu 에 연결되어있는 함수
-    // 맵이동시, 여기서 오류 
     public override void Open()
     {
         base.Open();
@@ -105,6 +107,7 @@ public class UIInventory : BaseGameUI
             Init();
 
         gameObject.SetActive(true);
+        InitItem();
         Categorize();
     }
 
@@ -175,7 +178,6 @@ public class UIInventory : BaseGameUI
         tabItems.Clear();
         switch (selectedTab)
         {
-            // inventoryitem이 하나도 안들어옴
             case 0:
                 for (int i = 0; i < inventoryItems.Count; ++i)
                 {

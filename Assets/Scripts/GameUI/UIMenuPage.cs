@@ -7,6 +7,8 @@ public class UIMenuPage : BaseGameUI
 {
     public Button dungeonMenuBtn;
     public Button closeBtn;
+    public Button quitBtn;
+    private QuitDialog quitDialog;
 
     public override void Open()
     {
@@ -21,6 +23,7 @@ public class UIMenuPage : BaseGameUI
     public override void Init()
     {
         AddMenuPageBtnListener();
+        quitDialog.Init();
     }
 
     private void AddMenuPageBtnListener()
@@ -34,5 +37,8 @@ public class UIMenuPage : BaseGameUI
         dungeonMenuBtn.onClick.AddListener(() => UIGameMng.Instance.SetBasicScreenUI(false));
 
         closeBtn.onClick.AddListener(() => Close());
+
+        quitDialog = GetComponentInChildren<QuitDialog>(true);
+        quitBtn.onClick.AddListener(() => quitDialog.gameObject.SetActive(true));
     }
 }

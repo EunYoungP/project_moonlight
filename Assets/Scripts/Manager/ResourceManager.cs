@@ -69,7 +69,7 @@ public class ResourceManager : MonoBehaviour
         LoadGolem();
         LoadHpBar();
         LoadItem();
-        LoadItemIcon();
+        //LoadItemIcon();
         LoadSkillPanel();
         LoadSkillPopUp();
         LoadSkillList();

@@ -9,6 +9,8 @@ using UnityEngine;
 
 public class ItemDB : csvReader
 {
+    private string csvFileURL;
+
     public List<Item> itemDB = new List<Item>();
     List<string> subjectStr = new List<string>();
         
@@ -35,16 +37,24 @@ public class ItemDB : csvReader
 
     private void InitItem()
     {
-        ReadItem();
-        
-        Debug.Log(itemDB[1]);
+        csvFileURL = "https://drive.google.com/file/d/1d8Fg93kMcUvWasAZYfRERX3jce6KoS5J/view?usp=sharing";
+        csvReaderInit(csvFileURL);
+
+        StartCoroutine(ReadItem());
+        //Debug.Log(itemDB[1]);
     }
 
-    public void ReadItem()
+    IEnumerator ReadItem()
     {
+        while(!IsDownLoading)
+        {
+            yield return null;
+        }
+
         List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
-        subjectStr = ReadSubject("ItemDB");
-        list = Read("ItemDB");
+
+        subjectStr = ReadSubject(csvFileURL);
+        list = Read(csvFileURL);
 
         // 아이템의 개수
         // csv파일에서 받아온 정보들을 Item에 담아서
@@ -62,6 +72,7 @@ public class ItemDB : csvReader
             item.ReadItem(valueList);
             AddItem(item);
         }
+        ResourceManager.Instance.LoadItemIcon();
     }
 
     public void AddItem(Item item)

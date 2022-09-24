@@ -31,4 +31,22 @@ public class ItemObject
         Bind = item.bind;
     }
 
+    public ItemObject() { }
+
+    //public ItemObject(int identifyID,int itemID, string modelName,
+    //    string iconName, ItemType itemType, DetailType detailType, 
+    //    string name, int weight, string grade, string tier, bool bind)
+    //{
+    //    IdentifyID = identifyID;
+    //    ItemID = itemID;
+    //    ModelName = modelName;
+    //    IconName = iconName;
+    //    ItemType = itemType;
+    //    DetailType = detailType;
+    //    Name = name;
+    //    Weight = weight;
+    //    Grade = grade;
+    //    Tier = tier;
+    //    Bind = bind;
+    //}
 }

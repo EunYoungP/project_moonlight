@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using System.IO;
 using System.Linq;
+using UnityEngine.Networking;
 
 public class Character
 {
@@ -108,6 +109,13 @@ public class SLManager : MonoBehaviour
     public List<ItemObject> inventoryInitItem = new List<ItemObject>();
     public List<ItemObject> curInventoryItem = new List<ItemObject>();
 
+    private UnityWebRequest request;
+    private string inventoryIniturl;
+    private string fileData;
+
+    private string downloadInventoryDBurl;
+    private string uploadInventoryDBurl;
+
     private static SLManager instance;
     public static SLManager Instance
     {
@@ -119,7 +127,6 @@ public class SLManager : MonoBehaviour
                 DontDestroyOnLoad(obj);
 
                 instance = obj.GetComponent<SLManager>();
-                instance.Init();
             }
             return instance;
         }
@@ -127,17 +134,32 @@ public class SLManager : MonoBehaviour
 
     public void Init()
     {
+        SetURL();
+
+        InitCharcater();
+        InitInventoryItem();
+    }
+
+    private void SetURL()
+    {
+        inventoryIniturl = "https://drive.google.com/file/d/1VfgOEwluuSyoS4o291PCc34vl8IoW9PD/view?usp=sharing";
+        downloadInventoryDBurl = "https://drive.google.com/file/d/1_bz1p68jXbOzl-te8k6MtEhfcG4NcXNw/view?usp=sharing";
+        uploadInventoryDBurl = "https://drive.google.com/file/d/1_bz1p68jXbOzl-te8k6MtEhfcG4NcXNw/view?usp=sharing";
+    }
+
+    #region character
+
+    private void InitCharcater()
+    {
         if (characterDataDic.Count > 0)
             return;
 
-        characterDataDic["Player1"] = new Character("Player1", 2,1000, 0, 1000, 1000, 1000, 1000, 100, 300, 0, 0, 0, 0, false);
+        characterDataDic["Player1"] = new Character("Player1", 2, 1000, 0, 1000, 1000, 1000, 1000, 100, 300, 0, 0, 0, 0, false);
 
-        for(int i = 0; i<MonsterManager.Instance.monsterInRange; i++)
+        for (int i = 0; i < MonsterManager.Instance.monsterInRange; i++)
         {
-            characterDataDic["Golem"+(i+1).ToString()] = new Character("Golem"+ (i + 1).ToString(), 1,0, 555, 1000, 1000, 0, 0, 300, 400, 0, 0, 0, 0, false);
+            characterDataDic["Golem" + (i + 1).ToString()] = new Character("Golem" + (i + 1).ToString(), 1, 0, 555, 1000, 1000, 0, 0, 300, 400, 0, 0, 0, 0, false);
         }
-
-        InitInventoryItem();
     }
 
     public void CreateGolemData(MAP mapType, int golemNum)
@@ -171,7 +193,7 @@ public class SLManager : MonoBehaviour
         //byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jdata);
         //string format = System.Convert.ToBase64String(bytes);
 
-        File.WriteAllText(Application.dataPath + "/Resources/DBfile/CharacterData.json", jdata);
+        File.WriteAllText(Application.persistentDataPath + "/Resources/DBfile/CharacterData.json", jdata);
     }
 
     public void LoadData()
@@ -195,22 +217,155 @@ public class SLManager : MonoBehaviour
         print(characterDataDic["Player01"].curHp);
     }
 
+    #endregion
+
     private void InitInventoryItem()
     {
-        if (curInventoryItem.Count > 0)
+        // GoogleDrvie file Load/Save
+        #region using googledrive 
+        //if (request == null)
+        //{
+        //    StartCoroutine(DownLoadJson(inventoryIniturl));
+        //    return;
+        //}
+
+        //다운로드가 처음이 아닐경우
+        //if (curInventoryItem.Count > 0)
+        //{
+        //    //SaveInventoryData();
+        //    LoadDataInLocal();
+        //    return;
+        //}
+        #endregion
+
+        string filePath = Application.persistentDataPath + "/InventoryDB.json";
+        // 새게임
+        if (!File.Exists(filePath))
         {
-            SaveInventory();
-            LoadInventory();
+            StartCoroutine(DownLoadJson(inventoryIniturl, filePath));
             return;
         }
+        else
+        {
+            LoadDataInLocal();
+        }
+    }
 
-        //string[] line = File.ReadAllLines(Application.dataPath + "/Resources/DBfile/InitInventoryData.txt");
-        TextAsset sourcefile = Resources.Load<TextAsset>("DBfile/InitInventoryData");
-        StringReader sr = new StringReader(sourcefile.text);
+    private string ExtractFileURL(string url)
+    {
+        url = url.Replace("https://drive.google.com/file/d/", "");
+        url = url.Replace("/view?usp=sharing", "");
+
+        string prefix = "http://drive.google.com/uc?export=view&id=";
+        url = prefix + url;
+
+        return url;
+    }
+
+    public void SaveDataInLocal()
+    {
+        string path = Application.persistentDataPath + "/InventoryDB.json";
+        curInventoryItem = UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).inventoryItems;
+        string jdata = JsonConvert.SerializeObject(curInventoryItem);
+
+        File.WriteAllText(path, jdata);
+    }
+
+    // Android dataPath : C:/Users/Park E.Y/AppData/LocalLow/dobby/moonlight
+    public void LoadDataInLocal()
+    {
+        string filePath = Application.persistentDataPath + "/InventoryDB.json";
+        string jdata;
+
+        if (!File.Exists(filePath))
+        {
+            StartCoroutine(DownLoadJson(inventoryIniturl, filePath));
+            return;
+        }
+        else
+        {
+            jdata = File.ReadAllText(filePath);
+            curInventoryItem = JsonConvert.DeserializeObject<List<ItemObject>>(jdata);
+            //UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InitItem();
+        }
+    }
+
+    public void UpLoadInventoryData()
+    {
+        string jdata = JsonConvert.SerializeObject(curInventoryItem);
+        StartCoroutine(UpLoadJson(uploadInventoryDBurl, jdata));
+    }
+
+    public void DownLoadInventoryInitData()
+    {
+    }
+
+    private IEnumerator DownLoadJson(string fileURL, string filePath)
+    {
+        var gdfileURL = ExtractFileURL(fileURL);
+
+        request = UnityWebRequest.Get(gdfileURL);
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.Log(request.error);
+        }
+        else
+        {
+            fileData = request.downloadHandler.text;
+            curInventoryItem = JsonConvert.DeserializeObject<List<ItemObject>>(fileData);
+            //UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InitItem();
+        }
+    }
+
+    private IEnumerator UpLoadJson(string fileURL, string jdata)
+    {
+        var filePath = ExtractFileURL(fileURL);
+
+        using (UnityWebRequest request = UnityWebRequest.Post(filePath, jdata))
+        {
+            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(jdata);
+            request.uploadHandler = new UploadHandlerRaw(jsonToSend);
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            yield return request.SendWebRequest();
+            if (request.isHttpError || request.isNetworkError)
+            {
+                Debug.Log(request.error);
+            }
+            else
+            {
+                Debug.Log(request.downloadHandler.text);
+            }
+        }
+    }
+
+    private void CreateInitJson()
+    {
+        foreach(Item item in ItemDB.Instance.itemDB)
+        {
+            if(item.name == "심장석"
+                || item.name == "두툼한 고기 덩어리"
+                || item.name == "HP 회복 물약"
+                || item.name == "MP 회복 물약"
+                || item.name == "빵")
+            {
+                curInventoryItem.Add(DropItem.Instance.NewItemObect(item));
+            }
+        }
+        string jdata = JsonConvert.SerializeObject(curInventoryItem);
+        Debug.Log("현재 인벤토리 정보 : " + jdata);
+        File.WriteAllText(Application.dataPath + "/Resources/DBfile/InitInventoryItem.json", jdata);
+    }
+
+    private void ParsingData(string jdata)
+    {
+        StringReader sr = new StringReader(jdata);
         string[] lines = new string[5];
 
         int index = 0;
-        while(true)
+        while (true)
         {
             string line = sr.ReadLine();
             if (line == null) break;
@@ -219,7 +374,7 @@ public class SLManager : MonoBehaviour
             index++;
         }
 
-        for(int i =0; i< lines.Length; i++)
+        for (int i = 0; i < lines.Length; i++)
         {
             string[] row = lines[i].Split('\t');
             List<string> rowList = row.ToList();
@@ -228,32 +383,12 @@ public class SLManager : MonoBehaviour
             item.ReadItem(rowList);
 
             ItemObject newItemObject = DropItem.Instance.NewItemObect(item);
-            inventoryInitItem.Add(newItemObject);
+            //inventoryInitItem.Add(newItemObject);
         }
-    }
-
-    public void SaveInventory()
-    {
-        string path = Application.persistentDataPath + "Resrouces/DBfile/InventoryDB.json";
-        if(!Directory.Exists(path))
-            Directory.CreateDirectory(path);
-
-        string jdata = JsonConvert.SerializeObject(curInventoryItem);
-        File.WriteAllText(path, jdata);
-    }
-
-    public void LoadInventory()
-    {
-        string path = Application.persistentDataPath + "Resources/DBfile/InventoryDB.json";
-        if (!Directory.Exists(path))
-            Directory.CreateDirectory(path);
-
-        string jdata = File.ReadAllText(path);
-        curInventoryItem = JsonConvert.DeserializeObject<List<ItemObject>>(jdata);
     }
 
     private void OnApplicationQuit()
     {
-        SaveInventory();
+       SaveDataInLocal();
     }
 }

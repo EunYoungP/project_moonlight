@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.Networking;
 using System.IO;
 
 // Read함수
@@ -11,12 +11,51 @@ using System.IO;
 // 3. Dictionary에 담은값을 List에 담아주고 리턴한다.
 public class csvReader : MonoBehaviour
 {
-    public List<Dictionary<string, string>> Read(string file)
+    private UnityWebRequest request;
+    private string sourceFileText;
+    private bool isDownLoading = false;
+    public bool IsDownLoading { get { return isDownLoading; } }
+
+    public void csvReaderInit(string csvFileURL)
     {
-        string path = "DBfile/" + file;
-        //StreamReader sr = new StreamReader(Application.dataPath + "/Resources/DBfile/" + file);
-        TextAsset sourcefile = Resources.Load<TextAsset>(path);
-        StringReader sr = new StringReader(sourcefile.text);
+        StartCoroutine(DownLoadCSV(csvFileURL));
+    }
+
+    private string ExtractFileID(string url)
+    {
+        url = url.Replace("https://drive.google.com/file/d/", "");
+        url = url.Replace("/view?usp=sharing", "");
+
+        var prefix = "http://drive.google.com/uc?export=view&id=";
+        url = prefix + url;
+
+        return url;
+    }
+
+   public IEnumerator DownLoadCSV(string fileURL)
+    {
+        var filePath = ExtractFileID(fileURL);
+
+        request = UnityWebRequest.Get(filePath);
+        yield return request.SendWebRequest();
+
+        if (request.isNetworkError || request.isHttpError)
+            Debug.Log(request.error);
+        else
+        {
+            sourceFileText = request.downloadHandler.text;
+            Debug.Log(request.downloadHandler.text);
+            isDownLoading = true;
+        }
+    }
+
+    public List<Dictionary<string, string>> Read(string fileURL)
+    {
+        //var filePath = ExtractFileID(fileURL);
+        //string path = "DBfile/" + file;
+
+        //TextAsset sourcefile = Resources.Load<TextAsset>(filePath);
+        StringReader sr = new StringReader(sourceFileText);
         List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
         List<string> subject = new List<string>();
@@ -49,12 +88,13 @@ public class csvReader : MonoBehaviour
         return list;
     }
 
-    public List<string> ReadSubject(string file)
+    public List<string> ReadSubject(string fileURL)
     {
-        string path = "DBfile/" + file;
-        //StreamReader sr = new StreamReader(Application.dataPath + "/Resources/DBfile/" + file);
-        TextAsset sourcefile = Resources.Load<TextAsset>(path);
-        StringReader sr = new StringReader(sourcefile.text);
+        //string filePath = ExtractFileID(fileURL);
+        //string path = "DBfile/" + file;
+
+        //TextAsset sourcefile = Resources.Load<TextAsset>(filePath);
+        StringReader sr = new StringReader(sourceFileText);
         List<string> subject = new List<string>();
 
         while (true)
