@@ -16,6 +16,9 @@ public class UIDetailPage :BaseGameUI
     public Button UnEquipBtn;
     public Button CloseBtn;
 
+    // 봉인 상태 추가
+    public Button LockBtn;
+
     public Text m_name;
     public Text m_detailType;
     public Text m_tier;

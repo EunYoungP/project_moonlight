@@ -128,10 +128,12 @@ public class UIInventory : BaseGameUI
             Debug.Log("가방이 꽉 찼습니다.");
             return false;
         }
-
-        inventoryItems.Add(item);
-        Categorize();
-        return true;
+        else
+        {
+            inventoryItems.Add(item);
+            Categorize();
+            return true;
+        }
     }
 
     public void RemoveItem(ItemObject item)

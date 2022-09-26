@@ -185,7 +185,7 @@ public class SLManager : MonoBehaviour
         return null;
     }
 
-    public void SaveData()
+    public void SaveCharacterData()
     {
         string jdata = JsonConvert.SerializeObject(characterDataDic);
 
@@ -196,7 +196,7 @@ public class SLManager : MonoBehaviour
         File.WriteAllText(Application.persistentDataPath + "/Resources/DBfile/CharacterData.json", jdata);
     }
 
-    public void LoadData()
+    public void LoadCharacterData()
     {
         string jdata = string.Empty;
         string path = "DBfile/CharacterData.json";

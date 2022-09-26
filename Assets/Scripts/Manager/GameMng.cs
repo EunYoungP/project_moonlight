@@ -44,6 +44,7 @@ public class GameMng : MonoBehaviour
     //QuestManager.Instance.Init();
     private void Init()
     {
+        ItemDB.Instance.InitItem();
         DownLoadAssetBundle.Instance.Init();
         HpBarParent.Instance.Init();
         SLManager.Instance.Init();

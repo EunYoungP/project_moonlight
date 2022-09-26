@@ -19,45 +19,10 @@ public class PickUpItem : MonoBehaviour
     public void PickUp()
     {
         Debug.Log("PickUp : " + PPikcUpItem.Name);
+        UIMng.Instance.OpenUI<UIPickUpItem>(UIType.UIPickUpItem).PlayAddItemAnim(PPikcUpItem);
         bool isAdd = UIGameMng.Instance.uiGameDic[UIGameType.Inventory].AddItem(PPikcUpItem);
 
         if (isAdd)
             Destroy(gameObject);
-    }
-
-    private void PlayAddItemAnim()
-    {
-        if(AddItemUIObj == null)
-        {
-            AddItemUIObj = Instantiate(ResourceManager.Instance.PICKUPITEM_UI, transform.parent);
-            AddItemAnim = AddItemUIObj.GetComponentInChildren<Animator>();
-            AddItemImg = AddItemUIObj.GetComponentInChildren<Image>();
-        }
-
-        SetActiveAnim(true);
-
-        foreach(Sprite sprite in ResourceManager.Instance.ITEMICON)
-        {
-            if (sprite.name == PPikcUpItem.IconName)
-                AddItemImg.sprite = sprite;
-        }
-
-        StartCoroutine(CheckAnimDone());
-    }
-
-    IEnumerator CheckAnimDone()
-    {
-        while(AddItemAnim.GetCurrentAnimatorStateInfo(0).normalizedTime < 1)
-        {
-            yield return null;
-        }
-
-        SetActiveAnim(false);
-        yield return null;
-    }
-
-    private void SetActiveAnim(bool value)
-    {
-        AddItemUIObj.SetActive(value);
-    }
+    }   
 }

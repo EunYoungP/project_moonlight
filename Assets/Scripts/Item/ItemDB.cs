@@ -25,8 +25,8 @@ public class ItemDB : csvReader
                 DontDestroyOnLoad(obj);
                 instance = obj.GetComponent<ItemDB>();
                 
-                if (instance != null)
-                    instance.InitItem();
+                //if (instance != null)
+                //    instance.InitItem();
 
                 return instance;
             }
@@ -35,7 +35,7 @@ public class ItemDB : csvReader
         }
     }
 
-    private void InitItem()
+    public void InitItem()
     {
         csvFileURL = "https://drive.google.com/file/d/1d8Fg93kMcUvWasAZYfRERX3jce6KoS5J/view?usp=sharing";
         csvReaderInit(csvFileURL);
@@ -72,6 +72,7 @@ public class ItemDB : csvReader
             item.ReadItem(valueList);
             AddItem(item);
         }
+        ResourceManager.Instance.LoadItem();
         ResourceManager.Instance.LoadItemIcon();
     }
 

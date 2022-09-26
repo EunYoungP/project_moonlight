@@ -8,6 +8,7 @@ public enum UIType
     Fade,
     UILevelUp,
     DungeonPage,
+    UIPickUpItem,
 }
 
 public class UIMng : MonoBehaviour
@@ -37,6 +38,7 @@ public class UIMng : MonoBehaviour
         AddScript<Fade>(UIType.Fade);
         AddScript<UILevelUp>(UIType.UILevelUp);
         AddScript<DungeonPage>(UIType.DungeonPage);
+        AddScript<UIPickUpItem>(UIType.UIPickUpItem);
     }
     
     // 게임이 시작할때 UIMng에 ui스크립트들을 가진 오브젝트들을 생성하고,
