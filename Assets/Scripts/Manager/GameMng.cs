@@ -48,6 +48,7 @@ public class GameMng : MonoBehaviour
         DownLoadAssetBundle.Instance.Init();
         HpBarParent.Instance.Init();
         SLManager.Instance.Init();
+        ItemManager.Instance.Init();
         Player.Instance.Init();
         MonsterManager.Instance.Init();
         SkillManager.Instance.Init();

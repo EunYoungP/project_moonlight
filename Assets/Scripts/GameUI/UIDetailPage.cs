@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 //애니메이션 레이어교체
@@ -11,25 +9,32 @@ using UnityEngine.UI;
 public class UIDetailPage :BaseGameUI
 {
     private ItemObject item;
-
-    public Button EquipBtn;
-    public Button UnEquipBtn;
-    public Button CloseBtn;
-
-    // 봉인 상태 추가
-    public Button LockBtn;
-
-    public Text m_name;
-    public Text m_detailType;
-    public Text m_tier;
-    public Image m_icon;
-    public Text weight;
-
+    private InventorySlot selectedSlot;
     private UIEquipment uiEquipment;
     private UIInventory uiInventory;
-    private InventorySlot selectedSlot;
-    
-    //private int gold;
+    private bool isEquipItem;
+    private bool isEquipTypeItem;
+
+    public GameObject selectedItemDetailPage;
+    public GameObject equipItemDetailPage;
+
+    [Header("선택아이템 상세페이지")]
+    public Button sEquipBtn;
+    public Button sUnEquipBtn;
+    public Button sCloseBtn;
+    public Button sLockBtn;
+    public Text sName;
+    public Text sDetailType;
+    public Text sTier;
+    public Image sIcon;
+    public Text sWeight;
+
+    [Header("착용아이템 상세페이지")]
+    public Text eName;
+    public Text eDetailType;
+    public Text eTier;
+    public Image eIcon;
+    public Text eWeight;
 
     public override void Init()
     {
@@ -38,43 +43,142 @@ public class UIDetailPage :BaseGameUI
         SlotAddListener();
     }
 
+    public bool CheckEquipEqualItem(InventorySlot selectedSlot)
+    {
+        if (selectedSlot.isEquipState)
+        {
+            Debug.Log("선택된 슬롯은 장착중인 아이템이 등록된 슬롯입니다.");
+            return true;
+        }
+        return false;
+    }
+
+    public ItemObject CheckEquipEqualType()
+    {
+        EquipSlot equilSlot = uiEquipment.FindEqualTypeEquipSlot(item);
+        bool isEquipEqualType = equilSlot.isItemExist;
+        if (isEquipEqualType)
+            return equilSlot.item;
+        return null;
+    }
+
     public void Receive(ItemObject item, InventorySlot selectedSlot)
     {
         this.item = item;
         this.selectedSlot = selectedSlot;
-        SetItemData();
-        SetBtnActive();
+
+        ItemManager.Instance.OpenDetailPage(item,selectedSlot);
+
+        //SetselectedItemData();
+        //SetBtnActive();
     }
 
-    public void SetItemData()
+    public void OpenSelectedItemData()
     {
-        m_name.text = item.Name;
-        m_detailType.text = item.DetailType.ToString();
-        m_tier.text = item.Tier;
-        m_icon.sprite = ItemDB.Instance.GetItemByName(item.Name).icon;
-        weight.text = item.Weight.ToString();
+        selectedItemDetailPage.gameObject.SetActive(true);
+        equipItemDetailPage.gameObject.SetActive(false);
+
+        SetSelectedItemPage(item);
+
+        SetBtnSelectedItem();
     }
 
-    private void SetBtnActive()
+    public void OpenEquipItemData()
+    {
+        selectedItemDetailPage.gameObject.SetActive(true);
+        equipItemDetailPage.gameObject.SetActive(false);
+
+        SetSelectedItemPage(item);
+
+        SetBtnEquipItem();
+    }
+
+    public void OpenCompareItemData(ItemObject equipItem)
+    {
+        selectedItemDetailPage.gameObject.SetActive(true);
+        equipItemDetailPage.gameObject.SetActive(true);
+
+        SetEquipItemPage(item);
+        SetEquipItemPage(equipItem);
+
+        SetBtnSelectedItem();
+    }
+
+    private void SetSelectedItemPage(ItemObject item)
+    {
+        sName.text = item.Name;
+        sDetailType.text = item.DetailType.ToString();
+        sTier.text = item.Tier;
+        sIcon.sprite = ItemDB.Instance.GetItemByName(item.Name).icon;
+        sWeight.text = item.Weight.ToString();
+    }
+
+    private void SetEquipItemPage(ItemObject equipItem)
+    {
+        eName.text = equipItem.Name;
+        eDetailType.text = equipItem.DetailType.ToString();
+        eTier.text = equipItem.Tier;
+        eIcon.sprite = ItemDB.Instance.GetItemByName(equipItem.Name).icon;
+        eWeight.text = equipItem.Weight.ToString();
+    }
+
+    private void SetBtnSelectedItem()
     {
         switch (item.ItemType)
         {
             case ItemType.Use:
-                UnEquipBtn.gameObject.SetActive(false);
-                EquipBtn.GetComponentInChildren<Text>().text = "사용";
+                sUnEquipBtn.gameObject.SetActive(true);
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                sEquipBtn.GetComponentInChildren<Text>().text = "사용";
                 break;
             case ItemType.Food:
-                UnEquipBtn.gameObject.SetActive(false);
-                EquipBtn.GetComponentInChildren<Text>().text = "먹기";
+                sUnEquipBtn.gameObject.SetActive(true);
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                sEquipBtn.GetComponentInChildren<Text>().text = "먹기";
                 break;
             case ItemType.Ingredient:
-                UnEquipBtn.gameObject.SetActive(false);
-                EquipBtn.GetComponentInChildren<Text>().text = "사용";
+                sUnEquipBtn.gameObject.SetActive(true);
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
                 break;
-            default:
-                UnEquipBtn.gameObject.SetActive(true);
-                EquipBtn.GetComponentInChildren<Text>().text = "장착";
+            case ItemType.Quest:
+                sUnEquipBtn.gameObject.SetActive(false);
+                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
                 break;
+            case ItemType.Etc:
+                sUnEquipBtn.gameObject.SetActive(false);
+                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
+                break;
+            case ItemType.Accessories:
+                sUnEquipBtn.gameObject.SetActive(true);
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                break;
+            case ItemType.Equipment:
+                sUnEquipBtn.gameObject.SetActive(true);
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                break;
+            case ItemType.Weapon:
+                sUnEquipBtn.gameObject.SetActive(true);
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                break;
+        }
+    }
+
+    private void SetBtnEquipItem()
+    {
+        if(item.ItemType == ItemType.Accessories
+            || item.ItemType == ItemType.Equipment
+            || item.ItemType == ItemType.Weapon)
+        {
+            sUnEquipBtn.gameObject.SetActive(false);
+            sEquipBtn.GetComponentInChildren<Text>().text = "벗기";
+        }
+        else
+        {
+            Debug.Log("장착아이템이 아닙니다.");
         }
     }
 
@@ -93,9 +197,9 @@ public class UIDetailPage :BaseGameUI
 
     public void SlotAddListener()
     {
-        EquipBtn.onClick.AddListener(() => { OnClickEquip(); });
-        UnEquipBtn.onClick.AddListener(() => { OnClickUnEquip(); });
-        CloseBtn.onClick.AddListener(() => { Close(); });
+        sEquipBtn.onClick.AddListener(() => { OnClickEquip(); });
+        sUnEquipBtn.onClick.AddListener(() => { OnClickUnEquip(); });
+        sCloseBtn.onClick.AddListener(() => { Close(); });
     }
 
     // 아이템 장착해제
@@ -132,7 +236,6 @@ public class UIDetailPage :BaseGameUI
                 return;
 
             // 장착아이템을 EquipSlot에 채우는 부분
-            // uiEquipment null exception 발생
             uiEquipment.EquipItem(item);
             Debug.Log("아이템 착용");
 

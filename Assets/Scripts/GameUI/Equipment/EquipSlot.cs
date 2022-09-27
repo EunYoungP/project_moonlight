@@ -4,12 +4,12 @@ using UnityEngine;
 using UnityEngine.UI;
 public class EquipSlot : MonoBehaviour
 {
-    private ItemObject item;
+    public ItemObject item { get; set; }
     public Image Icon;
     public Image bkIcon;
     public Button slotBtn;
 
-    private bool itemExist;
+    public bool isItemExist { get; set; }
 
     public EquipSlotType equipType;
 
@@ -19,7 +19,7 @@ public class EquipSlot : MonoBehaviour
             return;
 
         item = equipItem;
-        itemExist = true;
+        isItemExist = true;
 
         bkIcon.enabled = false;
         Icon.enabled = true;
@@ -32,7 +32,7 @@ public class EquipSlot : MonoBehaviour
             return;
 
         item = unequipItem;
-        itemExist = false;
+        isItemExist = false;
 
         bkIcon.enabled = true;
         Icon.enabled = false;
@@ -41,7 +41,7 @@ public class EquipSlot : MonoBehaviour
     public void ClearSlot()
     {
         item = null;
-        itemExist = false;
+        isItemExist = false;
 
         if (Icon != null)
         {
@@ -57,7 +57,7 @@ public class EquipSlot : MonoBehaviour
 
     public void OnClickSlot()
     {
-        if (!itemExist)
+        if (!isItemExist)
             return;
 
         UIGameMng.Instance.OpenUI<UIDetailPage>(UIGameType.DetailPage);
