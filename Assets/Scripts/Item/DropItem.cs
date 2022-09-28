@@ -48,7 +48,34 @@ public class DropItem : MonoBehaviour
 
                     SetPickUpItem(ItemPrefab, newItemObject);
 
-                    SetKeyID(ItemPrefab);
+                    // SetKeyID(ItemPrefab);
+
+                    OnDropItemVFX(ItemPrefab);
+
+                    dropItems.Add(ItemPrefab);
+                }
+            }
+        }
+    }
+
+    // dropsitems.remove 창
+    public void InventoryItemDrop(ItemObject itemObj, Vector3 dropPos, int itemCount = 1)
+    {
+        for (int i = 0; i < itemCount; i++)
+        {
+            // ItemPrefab 생성
+            foreach (GameObject obj in ResourceManager.Instance.ITEM)
+            {
+                // 1. Client가 원하는 Item을 ItemDB에서 찾기
+                if (obj.name == itemObj.ModelName)
+                {
+                    GameObject ItemPrefab = Instantiate(obj, dropPos, Quaternion.identity);
+                    SetDropRotate(ItemPrefab);
+                    ItemPrefab.name = ItemPrefab.name.Replace("(Clone)", "");
+
+                    SetPickUpItem(ItemPrefab, itemObj);
+
+                    // SetKeyID(ItemPrefab);
 
                     OnDropItemVFX(ItemPrefab);
 
@@ -60,7 +87,6 @@ public class DropItem : MonoBehaviour
 
     public ItemObject NewItemObect(Item itemData)
     {
-        // null exception
         ItemObject itemObject = new ItemObject(itemData, keyNum);
         itemObjects[keyNum] = itemObject;
         keyNum += 1;
@@ -79,16 +105,16 @@ public class DropItem : MonoBehaviour
     }
 
     // Item의 keyID 부여
-    public void SetKeyID(GameObject dropItem)
-    {
-        if (dropItem.GetComponent<PickUpItem>() != null)
-        {
-            PickUpItem pickUpItem = dropItem.GetComponent<PickUpItem>();
-            // PickupItem 이 아직 채워지지 않은 상태
-            pickUpItem.PPikcUpItem.IdentifyID = keyNum;
-            keyNum += 1;
-        }
-    }
+    //public void SetKeyID(GameObject dropItem)
+    //{
+    //    if (dropItem.GetComponent<PickUpItem>() != null)
+    //    {
+    //        PickUpItem pickUpItem = dropItem.GetComponent<PickUpItem>();
+    //        // PickupItem 이 아직 채워지지 않은 상태
+    //        pickUpItem.PPikcUpItem.IdentifyID = keyNum;
+    //        keyNum += 1;
+    //    }
+    //}
 
     private void OnDropItemVFX(GameObject dropItem)
     {

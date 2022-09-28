@@ -11,13 +11,13 @@ public class InventorySlot : MonoBehaviour
     public GameObject EquipImg;
     private Button slotBtn;
 
-    public bool itemExist;
+    public bool isItemExist;
     public bool isEquipState;
 
     public void AddItem(ItemObject newItem)
     {
         item = newItem;
-        itemExist = true;
+        isItemExist = true;
 
         Item itemData = ItemDB.Instance.GetItemByName(newItem.Name);
 
@@ -32,7 +32,7 @@ public class InventorySlot : MonoBehaviour
     public void ClearSlot()
     {
         item = null;
-        itemExist = false;
+        isItemExist = false;
 
         if( Icon != null )
             Icon.enabled = false;
@@ -46,7 +46,7 @@ public class InventorySlot : MonoBehaviour
 
     public void OnClickSlot()
     {
-        if (!itemExist)
+        if (!isItemExist)
             return;
 
         UIGameMng.Instance.OpenUI<UIDetailPage>(UIGameType.DetailPage);

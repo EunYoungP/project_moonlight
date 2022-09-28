@@ -12,13 +12,15 @@ public class EquipSlot : MonoBehaviour
     public bool isItemExist { get; set; }
 
     public EquipSlotType equipType;
+    private InventorySlot inventorySlot;
 
-    public void AddEquipItem(ItemObject equipItem)
+    public void AddEquipItem(ItemObject equipItem, InventorySlot invenSlot)
     {
         if (Icon == null)
             return;
 
         item = equipItem;
+        inventorySlot = invenSlot;
         isItemExist = true;
 
         bkIcon.enabled = false;
@@ -62,6 +64,7 @@ public class EquipSlot : MonoBehaviour
 
         UIGameMng.Instance.OpenUI<UIDetailPage>(UIGameType.DetailPage);
         UIDetailPage detailPage = GameObject.FindObjectOfType<UIDetailPage>();
-        detailPage.SendMessage("Receive", item, SendMessageOptions.DontRequireReceiver);
+        //detailPage.SendMessage("Receive", item, SendMessageOptions.DontRequireReceiver);
+        detailPage.Receive(item, inventorySlot);
     }
 }

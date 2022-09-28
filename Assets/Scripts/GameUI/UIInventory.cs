@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class UIInventory : BaseGameUI
 {
-    Category category;
-    InventorySlot[] inventorySlots;
+    private Category category;
+    private InventorySlot[] inventorySlots;
 
     public List<ItemObject> inventoryItems = new List<ItemObject>();
     public List<ItemObject> tabItems = new List<ItemObject>();
@@ -65,28 +65,30 @@ public class UIInventory : BaseGameUI
     }
 
     // 장착중 표시제어
-    public bool SetEquipState(ItemObject item, bool SetEquip)
+    public bool SetEquipState(ItemObject item,InventorySlot selectedSlot, bool SetEquip)
     {
         if (SetEquip)
         {
-            foreach (InventorySlot inventorySlot in inventorySlots)
+            foreach(InventorySlot invenSlot in inventorySlots)
             {
-                // item의 identify key 가 필요
-                if (inventorySlot.itemExist
-                    && inventorySlot.item.IdentifyID == item.IdentifyID
-                    && inventorySlot.isEquipState == false)
+                if (selectedSlot.isItemExist
+                    && !selectedSlot.isEquipState
+                    && selectedSlot.item.IdentifyID == item.IdentifyID)
                 {
-                    inventorySlot.SetEquipState();
+                    selectedSlot.SetEquipState();
                     return true;
                 }
+                else
+                {
+                    Debug.Log("아이템을 장착할 수 없습니다.");
+                }
             }
-            Debug.Log("아이템을 장착할 수 없습니다.");
         }
         if (!SetEquip)
         {
             foreach (InventorySlot inventorySlot in inventorySlots)
             {
-                if (inventorySlot.itemExist 
+                if (inventorySlot.isItemExist 
                     && inventorySlot.item.IdentifyID == item.IdentifyID 
                     && inventorySlot.isEquipState == true)
                 {
@@ -139,6 +141,16 @@ public class UIInventory : BaseGameUI
     public void RemoveItem(ItemObject item)
     {
         inventoryItems.Remove(item);
+        Categorize();
+
+        InventoryItemDrop(item);
+        //DropItem.Instance
+    }
+
+    public void InventoryItemDrop(ItemObject dropItem)
+    {
+        Vector3 dropPos = DropItem.Instance.DropPos(Player.Instance.gameObject);
+        DropItem.Instance.InventoryItemDrop(dropItem, dropPos);
     }
 
     public void OnClickTab(Button btn)

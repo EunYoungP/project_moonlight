@@ -122,45 +122,62 @@ public class UIDetailPage :BaseGameUI
         eWeight.text = equipItem.Weight.ToString();
     }
 
+    // Weapon의 버리기만 구현
     private void SetBtnSelectedItem()
     {
         switch (item.ItemType)
         {
             case ItemType.Use:
                 sUnEquipBtn.gameObject.SetActive(true);
+                sEquipBtn.gameObject.SetActive(true);
+
+                //sUnEquipBtn.onClick.RemoveAllListeners();
+                //sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
+
                 sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
                 sEquipBtn.GetComponentInChildren<Text>().text = "사용";
                 break;
             case ItemType.Food:
                 sUnEquipBtn.gameObject.SetActive(true);
+                sEquipBtn.gameObject.SetActive(true);
                 sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
                 sEquipBtn.GetComponentInChildren<Text>().text = "먹기";
                 break;
             case ItemType.Ingredient:
                 sUnEquipBtn.gameObject.SetActive(true);
+                sEquipBtn.gameObject.SetActive(true);
                 sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
                 sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
                 break;
             case ItemType.Quest:
                 sUnEquipBtn.gameObject.SetActive(false);
+                sEquipBtn.gameObject.SetActive(true);
                 sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
                 break;
             case ItemType.Etc:
                 sUnEquipBtn.gameObject.SetActive(false);
+                sEquipBtn.gameObject.SetActive(true);
                 sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
                 break;
             case ItemType.Accessories:
                 sUnEquipBtn.gameObject.SetActive(true);
+                sEquipBtn.gameObject.SetActive(true);
                 sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
                 sEquipBtn.GetComponentInChildren<Text>().text = "착용";
                 break;
             case ItemType.Equipment:
                 sUnEquipBtn.gameObject.SetActive(true);
+                sEquipBtn.gameObject.SetActive(true);
                 sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
                 sEquipBtn.GetComponentInChildren<Text>().text = "착용";
                 break;
             case ItemType.Weapon:
                 sUnEquipBtn.gameObject.SetActive(true);
+                sEquipBtn.gameObject.SetActive(true);
+
+                sUnEquipBtn.onClick.RemoveAllListeners();
+                sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
+
                 sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
                 sEquipBtn.GetComponentInChildren<Text>().text = "착용";
                 break;
@@ -173,8 +190,14 @@ public class UIDetailPage :BaseGameUI
             || item.ItemType == ItemType.Equipment
             || item.ItemType == ItemType.Weapon)
         {
-            sUnEquipBtn.gameObject.SetActive(false);
-            sEquipBtn.GetComponentInChildren<Text>().text = "벗기";
+            sUnEquipBtn.gameObject.SetActive(true);
+            sEquipBtn.gameObject.SetActive(false);
+
+            // 버튼에 연결된 이벤트 변경
+            sUnEquipBtn.onClick.RemoveAllListeners();
+            sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
+
+            sUnEquipBtn.GetComponentInChildren<Text>().text = "벗기";
         }
         else
         {
@@ -202,6 +225,15 @@ public class UIDetailPage :BaseGameUI
         sCloseBtn.onClick.AddListener(() => { Close(); });
     }
 
+    // 아이템 버리기
+    private void OnClickDrop()
+    {
+        if (uiInventory.SetEquipState(item, selectedSlot, false) == true)
+            return;
+
+
+    }
+
     // 아이템 장착해제
     private void OnClickUnEquip()
     {
@@ -209,7 +241,7 @@ public class UIDetailPage :BaseGameUI
         if (WeaponManager.Instance.CanUnEquip(item))
         {
             // 인벤토리에서 장착상태인지 검사 후, 장착중 표시 해제
-            if (uiInventory.SetEquipState(item, false) == false)
+            if (uiInventory.SetEquipState(item, selectedSlot, false) == false)
                 return;
 
             // 해제 아이템을 EquipSlot에서 삭제하는 부분
@@ -232,11 +264,11 @@ public class UIDetailPage :BaseGameUI
         if (CanChange())
         {
             // 장착된 아이템 인벤토리에서 장착중으로 표시
-            if (uiInventory.SetEquipState(item, true) == false)
+            if (uiInventory.SetEquipState(item, selectedSlot, true) == false)
                 return;
 
             // 장착아이템을 EquipSlot에 채우는 부분
-            uiEquipment.EquipItem(item);
+            uiEquipment.EquipItem(item, selectedSlot);
             Debug.Log("아이템 착용");
 
             UIGameMng.Instance.CloseUI(UIGameType.DetailPage);

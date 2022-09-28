@@ -116,14 +116,14 @@ public class UIEquipment : BaseGameUI
         return null;
     }
 
-    public void EquipItem(ItemObject item)
+    public void EquipItem(ItemObject item, InventorySlot inventorySlot)
     {
         equipItem = item;
         equipItems.Add(item);
 
         if (equipItem.ItemType == ItemType.Weapon)
         {
-            FindSlot(EquipSlotType.Weapon).AddEquipItem(equipItem);
+            FindSlot(EquipSlotType.Weapon).AddEquipItem(equipItem, inventorySlot);
         }
     }
 
