@@ -1,10 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-//애니메이션 레이어교체
-//Animator animator = Player.Instance.m_animator;
-//animator.SetLayerWeight(1, 1);
-//animator.SetLayerWeight(0, 0);
+public enum NoButtonType
+{
+    NONE,
+    DROP,
+    UNEQUIP,
+}
+
+public enum YesButtonType
+{
+    NONE,
+    EQUIP,
+    DETAIL,
+    EAT,
+    USE,
+}
 
 public class UIDetailPage :BaseGameUI
 {
@@ -40,7 +51,7 @@ public class UIDetailPage :BaseGameUI
     {
         uiEquipment = UIGameMng.Instance.gameObject.GetComponentInChildren<UIEquipment>(true)as UIEquipment;
         uiInventory = UIGameMng.Instance.gameObject.GetComponentInChildren<UIInventory>(true)as UIInventory;
-        SlotAddListener();
+        InitBtnAddListener();
     }
 
     public bool CheckEquipEqualItem(InventorySlot selectedSlot)
@@ -122,64 +133,34 @@ public class UIDetailPage :BaseGameUI
         eWeight.text = equipItem.Weight.ToString();
     }
 
-    // Weapon의 버리기만 구현
+    // Weapon의 버리기만 구현함
     private void SetBtnSelectedItem()
     {
         switch (item.ItemType)
         {
             case ItemType.Use:
-                sUnEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.gameObject.SetActive(true);
-
-                //sUnEquipBtn.onClick.RemoveAllListeners();
-                //sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
-
-                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
-                sEquipBtn.GetComponentInChildren<Text>().text = "사용";
+                ChangeBtnAddListener(NoButtonType.DROP, YesButtonType.USE);
                 break;
             case ItemType.Food:
-                sUnEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.gameObject.SetActive(true);
-                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
-                sEquipBtn.GetComponentInChildren<Text>().text = "먹기";
+                ChangeBtnAddListener(NoButtonType.DROP, YesButtonType.EAT);
                 break;
             case ItemType.Ingredient:
-                sUnEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.gameObject.SetActive(true);
-                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
-                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
+                ChangeBtnAddListener(NoButtonType.DROP, YesButtonType.DETAIL);
                 break;
             case ItemType.Quest:
-                sUnEquipBtn.gameObject.SetActive(false);
-                sEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
+                ChangeBtnAddListener(NoButtonType.NONE, YesButtonType.DETAIL);
                 break;
             case ItemType.Etc:
-                sUnEquipBtn.gameObject.SetActive(false);
-                sEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
+                ChangeBtnAddListener(NoButtonType.NONE, YesButtonType.DETAIL);
                 break;
             case ItemType.Accessories:
-                sUnEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.gameObject.SetActive(true);
-                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
-                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                ChangeBtnAddListener(NoButtonType.DROP, YesButtonType.EQUIP);
                 break;
             case ItemType.Equipment:
-                sUnEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.gameObject.SetActive(true);
-                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
-                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                ChangeBtnAddListener(NoButtonType.DROP, YesButtonType.EQUIP);
                 break;
             case ItemType.Weapon:
-                sUnEquipBtn.gameObject.SetActive(true);
-                sEquipBtn.gameObject.SetActive(true);
-
-                sUnEquipBtn.onClick.RemoveAllListeners();
-                sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
-
-                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
-                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                ChangeBtnAddListener(NoButtonType.DROP, YesButtonType.EQUIP);
                 break;
         }
     }
@@ -190,14 +171,7 @@ public class UIDetailPage :BaseGameUI
             || item.ItemType == ItemType.Equipment
             || item.ItemType == ItemType.Weapon)
         {
-            sUnEquipBtn.gameObject.SetActive(true);
-            sEquipBtn.gameObject.SetActive(false);
-
-            // 버튼에 연결된 이벤트 변경
-            sUnEquipBtn.onClick.RemoveAllListeners();
-            sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
-
-            sUnEquipBtn.GetComponentInChildren<Text>().text = "벗기";
+            ChangeBtnAddListener(NoButtonType.UNEQUIP, YesButtonType.NONE);
         }
         else
         {
@@ -218,11 +192,62 @@ public class UIDetailPage :BaseGameUI
         gameObject.SetActive(false);
     }
 
-    public void SlotAddListener()
+    public void InitBtnAddListener()
     {
         sEquipBtn.onClick.AddListener(() => { OnClickEquip(); });
         sUnEquipBtn.onClick.AddListener(() => { OnClickUnEquip(); });
         sCloseBtn.onClick.AddListener(() => { Close(); });
+    }
+
+    private void ChangeBtnAddListener(NoButtonType nBtnType, YesButtonType yBtnType)
+    {
+        sUnEquipBtn.gameObject.SetActive(true);
+        sEquipBtn.gameObject.SetActive(true);
+
+        switch (nBtnType)
+        {
+            case NoButtonType.DROP:
+                sUnEquipBtn.onClick.RemoveAllListeners();
+                sUnEquipBtn.onClick.AddListener(() => OnClickDrop());
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "버리기";
+                break;
+            case NoButtonType.UNEQUIP:
+                sUnEquipBtn.onClick.RemoveAllListeners();
+                sUnEquipBtn.onClick.AddListener(() => OnClickUnEquip());
+                sUnEquipBtn.GetComponentInChildren<Text>().text = "벗기";
+                break;
+            case NoButtonType.NONE:
+                sUnEquipBtn.gameObject.SetActive(false);
+                break;
+        }
+
+        // 임시로 전부 Equip 상태로 변경
+        switch (yBtnType)
+        {
+            case YesButtonType.DETAIL:
+                sEquipBtn.onClick.RemoveAllListeners();
+                sEquipBtn.onClick.AddListener(() => OnClickEquip());
+                sEquipBtn.GetComponentInChildren<Text>().text = "상세보기";
+                break;
+            case YesButtonType.EAT:
+                sEquipBtn.onClick.RemoveAllListeners();
+                sEquipBtn.onClick.AddListener(() => OnClickEquip());
+                sEquipBtn.GetComponentInChildren<Text>().text = "먹기";
+                break;
+            case YesButtonType.EQUIP:
+                sEquipBtn.onClick.RemoveAllListeners();
+                sEquipBtn.onClick.AddListener(() => OnClickEquip());
+                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
+                break;
+            case YesButtonType.USE:
+                sEquipBtn.onClick.RemoveAllListeners();
+                sEquipBtn.onClick.AddListener(() => OnClickEquip());
+                sEquipBtn.GetComponentInChildren<Text>().text = "사용";
+                break;
+            case YesButtonType.NONE:
+                sEquipBtn.gameObject.SetActive(false);
+                break;
+        }
     }
 
     // 아이템 버리기
@@ -231,7 +256,10 @@ public class UIDetailPage :BaseGameUI
         if (uiInventory.SetEquipState(item, selectedSlot, false) == true)
             return;
 
+        uiInventory.RemoveItem(item);
 
+        UIGameMng.Instance.CloseUI(UIGameType.DetailPage);
+        Debug.Log("아이템이 장착해제 되었습니다.");
     }
 
     // 아이템 장착해제

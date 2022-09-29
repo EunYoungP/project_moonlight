@@ -88,11 +88,11 @@ public class UIInventory : BaseGameUI
         {
             foreach (InventorySlot inventorySlot in inventorySlots)
             {
-                if (inventorySlot.isItemExist 
-                    && inventorySlot.item.IdentifyID == item.IdentifyID 
-                    && inventorySlot.isEquipState == true)
+                if (selectedSlot.isItemExist 
+                    && selectedSlot.item.IdentifyID == item.IdentifyID 
+                    && selectedSlot.isEquipState == true)
                 {
-                    inventorySlot.SetUnEquipState();
+                    selectedSlot.SetUnEquipState();
                     return true;
                 }
             }
