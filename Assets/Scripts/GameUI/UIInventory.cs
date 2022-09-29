@@ -8,6 +8,7 @@ public class UIInventory : BaseGameUI
     private Category category;
     private InventorySlot[] inventorySlots;
 
+    public List<ItemObject> equipItems = new List<ItemObject>();
     public List<ItemObject> inventoryItems = new List<ItemObject>();
     public List<ItemObject> tabItems = new List<ItemObject>();
 
@@ -69,36 +70,44 @@ public class UIInventory : BaseGameUI
     {
         if (SetEquip)
         {
-            foreach(InventorySlot invenSlot in inventorySlots)
+            if (selectedSlot.isItemExist
+                && !selectedSlot.isEquipState
+                && selectedSlot.item.IdentifyID == item.IdentifyID)
             {
-                if (selectedSlot.isItemExist
-                    && !selectedSlot.isEquipState
-                    && selectedSlot.item.IdentifyID == item.IdentifyID)
-                {
-                    selectedSlot.SetEquipState();
-                    return true;
-                }
-                else
-                {
-                    Debug.Log("아이템을 장착할 수 없습니다.");
-                }
+                selectedSlot.SetEquipState();
+                equipItems.Add(item);
+                return true;
+            }
+            else
+            {
+                Debug.Log("아이템을 장착할 수 없습니다.");
             }
         }
         if (!SetEquip)
         {
-            foreach (InventorySlot inventorySlot in inventorySlots)
+            if (selectedSlot.isItemExist
+                && selectedSlot.item.IdentifyID == item.IdentifyID
+                && selectedSlot.isEquipState == true)
             {
-                if (selectedSlot.isItemExist 
-                    && selectedSlot.item.IdentifyID == item.IdentifyID 
-                    && selectedSlot.isEquipState == true)
-                {
-                    selectedSlot.SetUnEquipState();
-                    return true;
-                }
+                selectedSlot.SetUnEquipState();
+                equipItems.Remove(item);
+                return true;
             }
-            Debug.Log("아이템을 해제할 수 없습니다.");
+            else
+            {
+                Debug.Log("아이템을 해제할 수 없습니다.");
+            }
         }
         return false;
+    }
+
+    private void CheckEquipItem(ItemObject item, InventorySlot invenSlot)
+    {
+        // 장착중인 아이템에 받아온 아이템이 들어있다면,
+        if(equipItems.Contains(item))
+        {
+            invenSlot.SetEquipState();
+        }
     }
 
     // UIMenu 에 연결되어있는 함수
@@ -246,14 +255,20 @@ public class UIInventory : BaseGameUI
     {
         for(int i = 0; i < inventorySlots.Length; ++i)
         {
+            inventorySlots[i].ClearSlot();
+
             if(i < tabItems.Count)
             {
                 inventorySlots[i].AddItem(tabItems[i]);
+                // 장착중이 아닌 아이템들이 모두 장착중상태로 변환
+                //SetEquipState(tabItems[i], inventorySlots[i], true);
+                CheckEquipItem(tabItems[i], inventorySlots[i]);
             }
-            else
-            {
-                inventorySlots[i].ClearSlot();
-            }
+            //else
+            //{
+            //    inventorySlots[i].ClearSlot();
+            //    SetEquipState(tabItems[i], inventorySlots[i], false);
+            //}
         }
     }
 }

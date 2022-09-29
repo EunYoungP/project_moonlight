@@ -36,6 +36,8 @@ public class InventorySlot : MonoBehaviour
 
         if( Icon != null )
             Icon.enabled = false;
+
+        SetUnEquipState();
     }
 
     public void SlotAddListener()

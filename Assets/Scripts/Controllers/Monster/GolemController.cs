@@ -28,8 +28,8 @@ public class GolemController : MonoBehaviour, BaseController
     private Transform target;
     private float findRange = 10f;
     private float attackRange = 2.5f;
-    private float patrolSpeed = 2;
-    private float tracteSpeed = 5;
+    private float patrolSpeed = 1;
+    private float tracteSpeed = 3;
 
     private float idlePrevTime;
     private float idleInterval = 2f;

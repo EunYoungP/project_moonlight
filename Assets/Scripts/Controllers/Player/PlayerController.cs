@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     public Transform targetPos { get; set; }
     public float attackRange {get{ return 2f;}}
-    private float speed = 10f;
+    private float speed = 6f;
 
     private float prevTime = 0;
     private float attackInterval = 1.5f;
