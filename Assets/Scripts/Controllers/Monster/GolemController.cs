@@ -21,13 +21,13 @@ public class GolemController : MonoBehaviour, BaseController
     private MonsterState curState = MonsterState.None;
     private Animator animator;
     private float elapsedTime;
-    private float attackTime = 2f;
+    private float attackInterval = 3f;
     private List<Vector3> patrolList = new List<Vector3>();
     private int patrolIndex = 0;
 
     private Transform target;
     private float findRange = 10f;
-    private float attackRange = 2.5f;
+    private float attackRange = 2f;
     private float patrolSpeed = 1;
     private float tracteSpeed = 3;
 
@@ -172,7 +172,7 @@ public class GolemController : MonoBehaviour, BaseController
         float distance = Vector3.Distance(transform.position, target.position);
         if(distance <= attackRange)
         {
-            if (attackTime <= elapsedTime)
+            if (attackInterval <= elapsedTime)
             {
                 elapsedTime = 0;
                 animator.SetTrigger("Attack");

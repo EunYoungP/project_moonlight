@@ -79,6 +79,12 @@ public class Character
         maxExp = Mathf.RoundToInt(maxExp * 1.5f);
     }
 
+    private void ResetStatus()
+    {
+        curHp = maxHp;
+        curMp = maxMp;
+    }
+
     public void LevelUpdate(Character target)
     {
         exp += target.exp;
@@ -90,6 +96,7 @@ public class Character
             IncreseMaxExp();
             IncreseMaxHP();
             IncreseMaxMP();
+            ResetStatus();
 
             UIGameMng.Instance.LevelUpUpdate();
             UIMng.Instance.OpenUI<UILevelUp>(UIType.UILevelUp).Open();
@@ -154,7 +161,7 @@ public class SLManager : MonoBehaviour
         if (characterDataDic.Count > 0)
             return;
 
-        characterDataDic["Player1"] = new Character("Player1", 2, 1000, 0, 1000, 1000, 1000, 1000, 100, 300, 0, 0, 0, 0, false);
+        characterDataDic["Player1"] = new Character("Player1", 1, 1000, 0, 2000, 2000, 1000, 1000, 100, 300, 0, 0, 0, 0, false);
 
         for (int i = 0; i < MonsterManager.Instance.monsterInRange; i++)
         {

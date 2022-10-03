@@ -25,11 +25,11 @@ public class PlayerController : MonoBehaviour
     public Animator animator { get; set; }
 
     public Transform targetPos { get; set; }
-    public float attackRange {get{ return 2f;}}
-    private float speed = 6f;
+    public float attackRange {get{ return 1.5f;}}
+    private float speed = 5f;
 
     private float prevTime = 0;
-    private float attackInterval = 1.5f;
+    private float attackInterval = 2f;
     private Vector3 destination;
 
     public bool isWaitActSkill { get; set; }

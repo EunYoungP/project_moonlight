@@ -241,7 +241,7 @@ public class UIDetailPage :BaseGameUI
                 break;
             case YesButtonType.USE:
                 sEquipBtn.onClick.RemoveAllListeners();
-                sEquipBtn.onClick.AddListener(() => OnClickEquip());
+                sEquipBtn.onClick.AddListener(() => OnClickUse());
                 sEquipBtn.GetComponentInChildren<Text>().text = "사용";
                 break;
             case YesButtonType.NONE:
@@ -250,6 +250,7 @@ public class UIDetailPage :BaseGameUI
         }
     }
 
+    #region NBtnEvent
     // 아이템 버리기
     private void OnClickDrop()
     {
@@ -285,7 +286,9 @@ public class UIDetailPage :BaseGameUI
         else
             Debug.Log("장착된 무기가 없습니다.");
     }
+    #endregion
 
+    #region YBynEvent
     // 아이템 장착
     public void OnClickEquip()
     {
@@ -314,6 +317,12 @@ public class UIDetailPage :BaseGameUI
             Debug.Log("아이템을 장착할 수 없습니다.");
         }
     }
+
+    private void OnClickUse()
+    {
+        //ItemManager.Instance.
+    }
+    #endregion
 
     // 추후 무기제외 장착품의 조건검사 추가예정
     public bool CanChange()

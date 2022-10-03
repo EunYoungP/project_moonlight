@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 400000}
   - component: {fileID: 114000010557799690}
   m_Layer: 0
-  m_Name: Marker.Crosshair
+  m_Name: TargetSkillMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spinRate: 100
-  initialScale: 2
+  initialScale: 1
   scalePulseAmount: 0.15
   scalePulseSpeed: 6
   markerLifespan: 100

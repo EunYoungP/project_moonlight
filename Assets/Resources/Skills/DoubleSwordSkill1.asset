@@ -23,6 +23,6 @@ MonoBehaviour:
   health: 0
   coolTime: 8
   useLevel: 1
-  skillRange: 3
+  skillRange: 2
   UseWeaponState: 2
-  isEquip: 0
+  isEquip: 1

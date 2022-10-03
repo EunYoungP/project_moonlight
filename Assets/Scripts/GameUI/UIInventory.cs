@@ -14,8 +14,12 @@ public class UIInventory : BaseGameUI
 
     public List<Button> tabBtns;
     public int selectedTab;
-    public int space = 20;
     private bool isInitalize = true;
+
+    private int maxSpace = 100;
+    private int curWeight;
+    public Text spaceText;
+    public Slider spaceSlider;
 
     public override void Init()
     {
@@ -54,7 +58,7 @@ public class UIInventory : BaseGameUI
 
         foreach(ItemObject itemobj in LoadItems)
         {
-            if (inventoryItems.Count > space)
+            if (inventoryItems.Count > maxSpace)
             {
                 Debug.Log("가방이 꽉 찼습니다.");
                 return;
@@ -134,9 +138,8 @@ public class UIInventory : BaseGameUI
         if (Player.Instance.GetItemEvent != null)
             Player.Instance.GetItemEvent(item);
 
-        if (inventoryItems.Count > space)
+        if(FullInventorySpace(item.Weight))
         {
-            Debug.Log("가방이 꽉 찼습니다.");
             return false;
         }
         else
@@ -145,6 +148,18 @@ public class UIInventory : BaseGameUI
             Categorize();
             return true;
         }
+
+        //if (inventoryItems.Count > maxSpace)
+        //{
+        //    Debug.Log("가방이 꽉 찼습니다.");
+        //    return false;
+        //}
+        //else
+        //{
+        //    inventoryItems.Add(item);
+        //    Categorize();
+        //    return true;
+        //}
     }
 
     public void RemoveItem(ItemObject item)
@@ -264,11 +279,33 @@ public class UIInventory : BaseGameUI
                 //SetEquipState(tabItems[i], inventorySlots[i], true);
                 CheckEquipItem(tabItems[i], inventorySlots[i]);
             }
-            //else
-            //{
-            //    inventorySlots[i].ClearSlot();
-            //    SetEquipState(tabItems[i], inventorySlots[i], false);
-            //}
         }
+        UpdateInventorySpace();
+    }
+
+    private bool FullInventorySpace(int addWeight)
+    {
+        int totalWeight = curWeight + addWeight;
+        if (maxSpace < totalWeight)
+        {
+            Debug.Log("가방이 꽉 찼습니다.");
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private void UpdateInventorySpace()
+    {
+        curWeight = 0;
+        for(int i = 0; i < inventoryItems.Count; i++)
+        {
+            curWeight += inventoryItems[i].Weight;
+        }
+
+        spaceText.text = string.Format("{0}/{1}({2}%)", curWeight.ToString(), maxSpace.ToString(), ((float)curWeight / (float)maxSpace * 100).ToString());
+        spaceSlider.value = (float)curWeight / maxSpace;
     }
 }

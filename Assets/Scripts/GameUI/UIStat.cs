@@ -9,6 +9,8 @@ public class UIStat : BaseGameUI
     public Slider hpSlider;
     public Slider mpSlider;
     public Slider expSlider;
+    public Text hpText;
+    public Text mpText;
 
     public override void Init()
     {
@@ -33,10 +35,22 @@ public class UIStat : BaseGameUI
         levelText.text = Player.Instance.data.level.ToString();
     }
 
+    private void HPUpdate()
+    {
+        hpSlider.value = (float)Player.Instance.data.curHp / Player.Instance.data.maxHp;
+        hpText.text = Player.Instance.data.curHp.ToString();
+    }
+
+    private void MPUpdate()
+    {
+        mpSlider.value = (float)Player.Instance.data.curMp / Player.Instance.data.maxMp;
+        mpText.text = Player.Instance.data.curMp.ToString();
+    }
+
     private void Update()
     {
         expSlider.value = (float)Player.Instance.data.exp / Player.Instance.data.maxExp;
-        hpSlider.value = (float)Player.Instance.data.curHp / Player.Instance.data.maxHp;
-        mpSlider.value = (float)Player.Instance.data.curMp / Player.Instance.data.maxMp;
+        HPUpdate();
+        MPUpdate();
     }
 }
