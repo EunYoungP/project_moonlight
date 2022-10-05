@@ -189,6 +189,7 @@ public class UIDetailPage :BaseGameUI
     public override void Close()
     {
         base.Close();
+        selectedSlot.SetSelectedUI(false);
         gameObject.SetActive(false);
     }
 
@@ -234,15 +235,15 @@ public class UIDetailPage :BaseGameUI
                 sEquipBtn.onClick.AddListener(() => OnClickEquip());
                 sEquipBtn.GetComponentInChildren<Text>().text = "먹기";
                 break;
-            case YesButtonType.EQUIP:
-                sEquipBtn.onClick.RemoveAllListeners();
-                sEquipBtn.onClick.AddListener(() => OnClickEquip());
-                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
-                break;
             case YesButtonType.USE:
                 sEquipBtn.onClick.RemoveAllListeners();
                 sEquipBtn.onClick.AddListener(() => OnClickUse());
                 sEquipBtn.GetComponentInChildren<Text>().text = "사용";
+                break;
+            case YesButtonType.EQUIP:
+                sEquipBtn.onClick.RemoveAllListeners();
+                sEquipBtn.onClick.AddListener(() => OnClickEquip());
+                sEquipBtn.GetComponentInChildren<Text>().text = "착용";
                 break;
             case YesButtonType.NONE:
                 sEquipBtn.gameObject.SetActive(false);
@@ -257,7 +258,7 @@ public class UIDetailPage :BaseGameUI
         if (uiInventory.SetEquipState(item, selectedSlot, false) == true)
             return;
 
-        uiInventory.RemoveItem(item);
+        uiInventory.InventoryItemDrop(item);
 
         UIGameMng.Instance.CloseUI(UIGameType.DetailPage);
         Debug.Log("아이템이 장착해제 되었습니다.");
@@ -320,7 +321,7 @@ public class UIDetailPage :BaseGameUI
 
     private void OnClickUse()
     {
-        //ItemManager.Instance.
+        ItemManager.Instance.UseItem<Use>(ItemType.Use, item);
     }
     #endregion
 

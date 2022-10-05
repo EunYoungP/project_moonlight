@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
                 break;
             case PlayerState.Move:
                 animator.SetBool("Run", true);
-                SoundManager.Instance.Play("Step/Running-4", SOUND.Step);
+                SoundManager.Instance.Play("Step/Running-4", SOUND.Step, 1.5f);
                 break;
             case PlayerState.BaseAttack:
                 animator.SetBool("Run", false);

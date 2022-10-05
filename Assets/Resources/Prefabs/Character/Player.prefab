@@ -2831,9 +2831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22257f7b902dc9146b05ad1255e194dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
-  targetPos: {fileID: 0}
-  attackInterval: 0
+  stepPitch: 1.5
 --- !u!114 &6616873472875641518
 MonoBehaviour:
   m_ObjectHideFlags: 0

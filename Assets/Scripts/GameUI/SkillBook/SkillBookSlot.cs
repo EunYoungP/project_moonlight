@@ -11,7 +11,6 @@ public class SkillBookSlot : MonoBehaviour
 
     private float scalePulseAmount = 0.04f;          
     private float scalePulseSpeed = 10f;
-
     private float InitScale = 1.0f;
     private float currScale;
     private bool canPulse;

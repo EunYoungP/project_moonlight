@@ -53,6 +53,24 @@ public class Character
     public int ATTACKPOWER
     { get { return Random.Range(minAttack, maxAttack + 1); } }
 
+    public void IncreaseHp(int addHp)
+    {
+        curHp += addHp;
+        if(curHp >maxHp)
+        {
+            curHp = maxHp;
+        }
+    }
+
+    public void IncreaseMp(int addMp)
+    {
+        curMp += addMp;
+        if (curMp > maxMp)
+        {
+            curMp = maxMp;
+        }
+    }
+
     public void DecreseHp(int enemyAttack)
     {
         curHp -= enemyAttack;

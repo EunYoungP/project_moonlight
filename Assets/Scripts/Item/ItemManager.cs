@@ -52,4 +52,14 @@ public class ItemManager : MonoBehaviour
         }
         itemDic[item.ItemType].OpenDetailPage(item, invenSlot);
     }
+
+    public void UseItem<T>(ItemType itemType,ItemObject useitem) where T : ItemBase
+    {
+        if(!itemDic.ContainsKey(itemType))
+        {
+            AddItemDic<T>(itemType);
+        }
+
+        itemDic[itemType].UseItem(useitem);
+    }
 }

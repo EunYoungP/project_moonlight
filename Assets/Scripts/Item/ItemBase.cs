@@ -5,4 +5,6 @@ using UnityEngine;
 public abstract class ItemBase : MonoBehaviour
 {
     public abstract void OpenDetailPage(ItemObject item, InventorySlot invenSlot);
+
+    public virtual void UseItem(ItemObject item) { }
 }

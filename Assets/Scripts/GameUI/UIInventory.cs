@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class UIInventory : BaseGameUI
 {
     private Category category;
+    public InventoryDeck InventoryDeck { get { return inventoryDeck; } }
+    private InventoryDeck inventoryDeck;
+    public InventorySlot[] InventorySlots { get { return inventorySlots; } }
     private InventorySlot[] inventorySlots;
 
     public List<ItemObject> equipItems = new List<ItemObject>();
@@ -24,12 +27,15 @@ public class UIInventory : BaseGameUI
     public override void Init()
     {
         category = GetComponentInChildren<Category>();
+        inventoryDeck = GetComponentInChildren<InventoryDeck>();
         inventorySlots = GetComponentsInChildren<InventorySlot>();
 
         category.Init();
+        inventoryDeck.Init();
         tabBtns = category.tabBtns;
         TabAddListener();
         InitTab();
+        InitSlots();
     }
 
     // 카테고리 버튼 리스너 연결
@@ -46,6 +52,14 @@ public class UIInventory : BaseGameUI
         selectedTab = 0;
         ChangeColor(tabBtns[0]);
         Categorize();
+    }
+
+    private void InitSlots()
+    {
+        foreach(InventorySlot invenSlot in inventorySlots)
+        {
+            invenSlot.Init();
+        }
     }
 
     public void InitItem()
@@ -167,12 +181,15 @@ public class UIInventory : BaseGameUI
         inventoryItems.Remove(item);
         Categorize();
 
-        InventoryItemDrop(item);
+        //InventoryItemDrop(item);
         //DropItem.Instance
     }
 
     public void InventoryItemDrop(ItemObject dropItem)
     {
+        inventoryItems.Remove(dropItem);
+        Categorize();
+
         Vector3 dropPos = DropItem.Instance.DropPos(Player.Instance.gameObject);
         DropItem.Instance.InventoryItemDrop(dropItem, dropPos);
     }

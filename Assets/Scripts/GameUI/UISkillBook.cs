@@ -25,7 +25,9 @@ public class UISkillBook : BaseGameUI
         panelTransform = UIGameMng.Instance.gameObject.GetComponentInChildren<PanelParent>(true).transform;
 
         if (skillDetail == null)
+        {
             skillDetail = GetComponentInChildren<SkillDetail>();
+        }
         if (skillBookDeck == null)
         {
             skillBookDeck = GetComponentInChildren<SkillBookDeck>();

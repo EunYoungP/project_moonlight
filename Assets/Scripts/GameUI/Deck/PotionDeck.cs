@@ -6,4 +6,8 @@ public class PotionDeck : BaseDeck
 {
     private PotionSlot[] potionSlots;
 
+    public override void Init()
+    {
+        potionSlots = GetComponentsInChildren<PotionSlot>(true);
+    }
 }

@@ -13,6 +13,13 @@ public class UIDeck : BaseGameUI
 {
     public static Dictionary<DeckType, BaseDeck> deckDic = new Dictionary<DeckType, BaseDeck>();
 
+    public override void Init()
+    {
+        AddScript<PotionDeck>(DeckType.PotionDeck);
+        AddScript<ItemDeck>(DeckType.ItemDeck);
+        AddScript<SkillDeck>(DeckType.SkillDeck);
+    }
+
     public void AddScript<T>(DeckType deckType)where T : BaseDeck
     {
         if(!deckDic.ContainsKey(deckType))
@@ -31,13 +38,6 @@ public class UIDeck : BaseGameUI
 
         T t = deckDic[deckType].GetComponent<T>();
         return t;
-    }
-
-    public override void Init()
-    {
-        AddScript<PotionDeck>(DeckType.PotionDeck);
-        AddScript<ItemDeck>(DeckType.ItemDeck);
-        AddScript<SkillDeck>(DeckType.SkillDeck);
     }
 
     public override void Open()
