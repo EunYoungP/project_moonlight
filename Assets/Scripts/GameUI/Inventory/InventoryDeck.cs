@@ -63,6 +63,14 @@ public class InventoryDeck : MonoBehaviour
         }
     }
 
+    public void SetNotEquipState()
+    {
+        foreach(InventoryDeckSlot invenDeckSlot in inventoryDeckSlots)
+        {
+            invenDeckSlot.SetDeckSlotPulse(false);
+        }
+    }
+
     // 인벤토리 덱슬롯 클릭시 실행
     private void ClickDeckSlot(InventoryDeckSlot selectedDeckSlot)
     {

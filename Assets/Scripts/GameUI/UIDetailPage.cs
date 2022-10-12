@@ -84,6 +84,7 @@ public class UIDetailPage :BaseGameUI
         //SetBtnActive();
     }
 
+    // 선택한 아이템창
     public void OpenSelectedItemData()
     {
         selectedItemDetailPage.gameObject.SetActive(true);
@@ -94,6 +95,7 @@ public class UIDetailPage :BaseGameUI
         SetBtnSelectedItem();
     }
 
+    // 장착중인 아이템창
     public void OpenEquipItemData()
     {
         selectedItemDetailPage.gameObject.SetActive(true);
@@ -104,6 +106,7 @@ public class UIDetailPage :BaseGameUI
         SetBtnEquipItem();
     }
 
+    // 장착아이템창, 선택아이템창
     public void OpenCompareItemData(ItemObject equipItem)
     {
         selectedItemDetailPage.gameObject.SetActive(true);
@@ -119,18 +122,36 @@ public class UIDetailPage :BaseGameUI
     {
         sName.text = item.Name;
         sDetailType.text = item.DetailType.ToString();
-        sTier.text = item.Tier;
         sIcon.sprite = ItemDB.Instance.GetItemByName(item.Name).icon;
         sWeight.text = item.Weight.ToString();
+
+        if (item.Tier != string.Empty)
+        {
+            sTier.transform.parent.gameObject.SetActive(true);
+            sTier.text = string.Format("티어  {0}", item.Tier);
+        }
+        else if (item.Tier == string.Empty)
+        {
+            sTier.transform.parent.gameObject.SetActive(false);
+        }
     }
 
     private void SetEquipItemPage(ItemObject equipItem)
     {
         eName.text = equipItem.Name;
         eDetailType.text = equipItem.DetailType.ToString();
-        eTier.text = equipItem.Tier;
         eIcon.sprite = ItemDB.Instance.GetItemByName(equipItem.Name).icon;
         eWeight.text = equipItem.Weight.ToString();
+
+        if (equipItem.Tier != string.Empty)
+        {
+            sTier.transform.parent.gameObject.SetActive(true);
+            sTier.text = string.Format("티어  {0}", equipItem.Tier);
+        }
+        else if (equipItem.Tier == string.Empty)
+        {
+            sTier.transform.parent.gameObject.SetActive(false);
+        }
     }
 
     // Weapon의 버리기만 구현함
@@ -190,6 +211,8 @@ public class UIDetailPage :BaseGameUI
     {
         base.Close();
         selectedSlot.SetSelectedUI(false);
+        InventoryDeck invenDeck = UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InventoryDeck;
+        invenDeck.SetNotEquipState();
         gameObject.SetActive(false);
     }
 

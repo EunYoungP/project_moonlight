@@ -82,8 +82,11 @@ public class UIQuestPopup : BaseGameUI
     {
         if (!isActive)
             return;
-
-        if (EventSystem.current.IsPointerOverGameObject(Player.Instance.playerController.pointerID))
+        
+        // 마우스 입력을 시작한 상태 
+        // 입력된 터치가 UI오브젝트 위에 있는 상태
+        if (Input.GetMouseButtonDown(0)
+            && EventSystem.current.IsPointerOverGameObject(Player.Instance.playerController.pointerID))
             Close();
     }
 }

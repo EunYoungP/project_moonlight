@@ -23,6 +23,8 @@ public class UIInventory : BaseGameUI
     private int curWeight;
     public Text spaceText;
     public Slider spaceSlider;
+    private int playerGold = 75000000;
+    public GameObject goldDisplayUI;
 
     public override void Init()
     {
@@ -36,6 +38,8 @@ public class UIInventory : BaseGameUI
         TabAddListener();
         InitTab();
         InitSlots();
+        InitSlotIndex();
+        DisplayGold(playerGold);
     }
 
     // 카테고리 버튼 리스너 연결
@@ -43,6 +47,7 @@ public class UIInventory : BaseGameUI
     {
         foreach (Button btn in tabBtns)
         {
+            // Error : stackoverflow
             btn.onClick.AddListener(() => { OnClickTab(btn); });
         }
     }
@@ -59,6 +64,14 @@ public class UIInventory : BaseGameUI
         foreach(InventorySlot invenSlot in inventorySlots)
         {
             invenSlot.Init();
+        }
+    }
+
+    private void InitSlotIndex()
+    {
+        for (int i = 0; i < inventorySlots.Length; i++)
+        {
+            inventorySlots[i].slotIndex = i;
         }
     }
 
@@ -81,6 +94,26 @@ public class UIInventory : BaseGameUI
         }
         Categorize();
         isInitalize = false;
+    }
+
+    private void DisplayGold(int goldData)
+    {
+        Text goldText = goldDisplayUI.GetComponentInChildren<Text>();
+        goldText.text = GetThousandCommaText(goldData);
+    }
+
+    public string GetThousandCommaText(int data)
+    {
+        return string.Format("{0:#,#}", data);
+    }
+
+    // CloseBtn 연결 이벤트
+    public void ResetSelectedSlotUI()
+    {
+        foreach (InventorySlot invenSlot in inventorySlots)
+        {
+            invenSlot.SetSelectedUI(false);
+        }
     }
 
     // 장착중 표시제어
@@ -138,6 +171,7 @@ public class UIInventory : BaseGameUI
         gameObject.SetActive(true);
         InitItem();
         Categorize();
+        inventoryDeck.SetNotEquipState();
     }
 
     public override void Close()
@@ -227,7 +261,7 @@ public class UIInventory : BaseGameUI
         }
     }
 
-    // 탭 고르고 타입에맞는 아이템을 텝아이템에 담음
+    // 탭 선택시 타입에맞는 아이템을 텝아이템에 담음
     public void Categorize()
     {
         tabItems.Clear();
@@ -281,7 +315,6 @@ public class UIInventory : BaseGameUI
         UpdateInventory();
     }
 
-    // 탭에맞는 아이템목록을 인벤토리에 채워넣는 함수 
     // Categorize 후 실행
     public void UpdateInventory()
     {

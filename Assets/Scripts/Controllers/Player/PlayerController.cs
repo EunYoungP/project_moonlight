@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     public Transform targetPos { get; set; }
     public float attackRange {get{ return 1.5f;}}
-    private float speed = 5f;
+    private float speed = 6.5f;
 
     private float prevTime = 0;
     private float attackInterval = 2f;
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     private PickUpItem playerPickUpItem;
     private PlayerInput playerInput;
 
-    // MouseInputID
+    // Edit MouseInputID
     public int pointerID { get; set; }
 
     public void Init()

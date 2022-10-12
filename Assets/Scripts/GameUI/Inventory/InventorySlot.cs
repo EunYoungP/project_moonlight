@@ -16,11 +16,14 @@ public class InventorySlot : MonoBehaviour
     public bool isItemExist;
     public bool isEquipState;
     public bool isSelectedState;
+    public int slotIndex;
 
-    // stackoverflow error
     public void Init()
     {
-        invenDeck = GameObject.Find("InventoryDeck").GetComponent<InventoryDeck>();
+        GameObject UIGameMngObj = GameObject.Find("UIGame(Clone)");
+        GameObject inventory = UIGameMngObj.transform.Find("Inventory").gameObject;
+        invenDeck = inventory.GetComponent<UIInventory>().InventoryDeck;
+        SlotAddListener();
     }
 
     public void AddItem(ItemObject newItem)
@@ -35,7 +38,7 @@ public class InventorySlot : MonoBehaviour
             Icon.enabled = true;
             Icon.sprite = itemData.icon;
         }
-        SlotAddListener();
+        //SlotAddListener();
     }
 
     public void ClearSlot()
@@ -66,16 +69,28 @@ public class InventorySlot : MonoBehaviour
 
     public void SetSelectedUI(bool isShow)
     {
+        // 모든 인벤토리 슬롯
         InventorySlot[] invenSlots = UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InventorySlots;
-        foreach(InventorySlot invenSlot in invenSlots)
+        // 모든 인벤토리 슬롯 검색
+        if(isShow)
         {
-            if(invenSlot == this)
+            foreach (InventorySlot invenSlot in invenSlots)
             {
-                SelectedImg.SetActive(isShow);
+                if (invenSlot.slotIndex == this.slotIndex)
+                {
+                    invenSlot.SelectedImg.SetActive(isShow);
+                }
+                else
+                {
+                    invenSlot.SelectedImg.SetActive(false);
+                }
             }
-            else
+        }
+        else if(!isShow)
+        {
+            foreach (InventorySlot invenSlot in invenSlots)
             {
-                SelectedImg.SetActive(false);
+                invenSlot.SelectedImg.SetActive(isShow);
             }
         }
     }

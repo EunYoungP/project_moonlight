@@ -271,7 +271,7 @@ public class QuestManager : MonoBehaviour
                 questNpcID = 2000;
                 break;
             case 50:
-                questHuntCount = 1;
+                questHuntCount = 5;
                 break;
             case 60:
                 questNpcID = 2000;
