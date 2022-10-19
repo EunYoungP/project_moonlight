@@ -27,20 +27,4 @@ public class WeaponPosR : MonoBehaviour
         // 현재무기 얻어오기
         currWeapon = GetComponentInChildren<PickUpItem>();
     }
-    
-    //public void SetWeapon(GameObject weapon)
-    //{
-    //    foreach(GameObject gameObject in ResourceManager.Instance.ITEM)
-    //    {
-    //        if(gameObject == weapon && currWeapon != weapon)
-    //        {
-    //            if(currWeapon != null)
-    //                Destroy(currWeapon.gameObject);
-
-    //            GameObject nextWeapon =  Instantiate(gameObject, this.transform);
-    //            nextWeapon.transform.rotation = Quaternion.Euler(180, 0, 0);
-    //            currWeapon = nextWeapon.GetComponent<PickUpItem>();
-    //        }
-    //    }
-    //}
 }

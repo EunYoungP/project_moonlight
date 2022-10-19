@@ -35,7 +35,6 @@ public class SkillSlot : MonoBehaviour, IPointerUpHandler
         skillIcon.gameObject.SetActive(true);
         isEmptySlot = false;
         DownLoadAssetBundle.Instance.SetSkillSlotSprite();
-        //this.skillIcon.sprite = skill.skillIcon;
     }
 
     public void UnEquipSkill()
@@ -45,5 +44,4 @@ public class SkillSlot : MonoBehaviour, IPointerUpHandler
         skillIcon.gameObject.SetActive(false);
         isEmptySlot = true;
     }
-
 }

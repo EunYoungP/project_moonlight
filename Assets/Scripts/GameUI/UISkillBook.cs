@@ -53,7 +53,6 @@ public class UISkillBook : BaseGameUI
             {
                 mySkills.Add(skill);
                 AddSkillPanel(skill);
-                //DownLoadAssetBundle.Instance.SetSkillBookSprite();
             }
         }
     }

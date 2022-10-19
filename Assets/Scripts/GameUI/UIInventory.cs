@@ -47,7 +47,6 @@ public class UIInventory : BaseGameUI
     {
         foreach (Button btn in tabBtns)
         {
-            // Error : stackoverflow
             btn.onClick.AddListener(() => { OnClickTab(btn); });
         }
     }
@@ -326,7 +325,6 @@ public class UIInventory : BaseGameUI
             {
                 inventorySlots[i].AddItem(tabItems[i]);
                 // 장착중이 아닌 아이템들이 모두 장착중상태로 변환
-                //SetEquipState(tabItems[i], inventorySlots[i], true);
                 CheckEquipItem(tabItems[i], inventorySlots[i]);
             }
         }

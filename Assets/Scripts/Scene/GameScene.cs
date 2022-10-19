@@ -6,7 +6,6 @@ public class GameScene : BaseScene
 {
     public override void LoadScene(SceneState thisSceneState)
     {
-        //thisSceneState = SceneState.GameScene;
         base.LoadScene(thisSceneState);
         PortalManager.Instance.CheckUsePortal();
     }

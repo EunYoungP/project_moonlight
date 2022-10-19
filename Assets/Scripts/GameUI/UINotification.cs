@@ -29,7 +29,6 @@ public class UINotification : BaseGameUI
     IEnumerator WaitFloating()
     {
         yield return new WaitForSeconds(floatingTime);
-
         Close();
     }
 

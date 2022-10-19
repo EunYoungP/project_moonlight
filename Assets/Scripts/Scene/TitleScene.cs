@@ -24,7 +24,6 @@ public class TitleScene : BaseScene
 
     public void FadeIn()
     {
-        //UIMng.Instance.OpenUI<Fade>(UIType.Fade).FadeIn(fadeInTime);
         StartCoroutine(SetWaitTouch());
     }
 
@@ -39,7 +38,6 @@ public class TitleScene : BaseScene
     {
         if (Input.GetMouseButtonUp(0))
         {
-            // 연결되는중 dialog 텍스트 변경
             titleSceneDialog.EnterGameState();
             FadeOut();
             waitStartState = false;

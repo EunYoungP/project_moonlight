@@ -1,12 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using System.Linq;
 
 // Item리스트를 가지고있는 클래스
 // csv클래스의 Read함수를 이용하여 가져온 값을 Item에 대입하여 itemDB리스트에 담는다.
 // Item클래스의 ReadItem으로 string으로 담아놓은 값들을 매핑하여 넣어준다.
-
 public class ItemDB : csvReader
 {
     private string csvFileURL;
@@ -25,9 +23,6 @@ public class ItemDB : csvReader
                 DontDestroyOnLoad(obj);
                 instance = obj.GetComponent<ItemDB>();
                 
-                //if (instance != null)
-                //    instance.InitItem();
-
                 return instance;
             }
             else
@@ -41,7 +36,6 @@ public class ItemDB : csvReader
         csvReaderInit(csvFileURL);
 
         StartCoroutine(ReadItem());
-        //Debug.Log(itemDB[1]);
     }
 
     IEnumerator ReadItem()
@@ -58,7 +52,7 @@ public class ItemDB : csvReader
 
         // 아이템의 개수
         // csv파일에서 받아온 정보들을 Item에 담아서
-        // ItemList에 담는다.
+        // ItemList에 담아줍니다.
         for(int i = 0; i<list.Count; ++i)
         {
             Item item = new Item();

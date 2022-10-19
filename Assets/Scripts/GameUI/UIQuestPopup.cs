@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Text;
 using UnityEngine.EventSystems;
 
 public class UIQuestPopup : BaseGameUI
@@ -15,6 +16,7 @@ public class UIQuestPopup : BaseGameUI
     public Sprite rewardExpImg;
 
     private bool isActive = false;
+    private StringBuilder sb = new StringBuilder(100);
 
     public override void Open(QuestData currQuestData)
     {
@@ -22,7 +24,9 @@ public class UIQuestPopup : BaseGameUI
         SoundManager.Instance.Play("Quest/Jingle_Achievement_00");
         gameObject.SetActive(isActive);
         SetQuestRewardUI();
-        detailText.text = "'" + currQuestData.questName + "'" + "완료";
+        sb.Append("'").Append(currQuestData.questName).Append("'").Append("완료");
+        detailText.text = sb.ToString();
+        sb.Clear();
     }
 
     private void SetQuestRewardUI()
@@ -83,7 +87,6 @@ public class UIQuestPopup : BaseGameUI
         if (!isActive)
             return;
         
-        // 마우스 입력을 시작한 상태 
         // 입력된 터치가 UI오브젝트 위에 있는 상태
         if (Input.GetMouseButtonDown(0)
             && EventSystem.current.IsPointerOverGameObject(Player.Instance.playerController.pointerID))

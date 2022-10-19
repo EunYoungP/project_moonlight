@@ -10,6 +10,7 @@ public class SlideDeck : MonoBehaviour
     public Transform secondPagePos;
 
     private Transform currPos;
+    private Text pageText;
 
     private bool isStartPage = true;
     private float slideTime;
@@ -29,7 +30,7 @@ public class SlideDeck : MonoBehaviour
 
     public void SetPageText()
     {
-        Text pageText = PageBtn.gameObject.GetComponentInChildren<Text>();
+        pageText = PageBtn.gameObject.GetComponentInChildren<Text>();
         if (isStartPage)
             pageText.text = "1";
         else

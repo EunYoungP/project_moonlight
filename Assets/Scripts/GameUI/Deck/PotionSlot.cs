@@ -16,7 +16,6 @@ public class PotionSlot : MonoBehaviour
     private Item potion;
     private Button slotBtn;
 
-    // 사용해야함
     private void Init()
     {
         slotBtn = GetComponent<Button>();

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using UnityEngine;
 using UnityEngine.UI;
 
 public enum NoButtonType
@@ -25,6 +26,7 @@ public class UIDetailPage :BaseGameUI
     private UIInventory uiInventory;
     private bool isEquipItem;
     private bool isEquipTypeItem;
+    private StringBuilder sb = new StringBuilder(100);
 
     public GameObject selectedItemDetailPage;
     public GameObject equipItemDetailPage;
@@ -79,9 +81,6 @@ public class UIDetailPage :BaseGameUI
         this.selectedSlot = selectedSlot;
 
         ItemManager.Instance.OpenDetailPage(item,selectedSlot);
-
-        //SetselectedItemData();
-        //SetBtnActive();
     }
 
     // 선택한 아이템창
@@ -128,7 +127,9 @@ public class UIDetailPage :BaseGameUI
         if (item.Tier != string.Empty)
         {
             sTier.transform.parent.gameObject.SetActive(true);
-            sTier.text = string.Format("티어  {0}", item.Tier);
+            sb.Append("티어  {0}").Append(item.Tier);
+            sTier.text = sb.ToString();
+            sb.Clear();
         }
         else if (item.Tier == string.Empty)
         {
@@ -146,7 +147,9 @@ public class UIDetailPage :BaseGameUI
         if (equipItem.Tier != string.Empty)
         {
             sTier.transform.parent.gameObject.SetActive(true);
-            sTier.text = string.Format("티어  {0}", equipItem.Tier);
+            sb.Append("티어  {0}").Append(equipItem.Tier);
+            sTier.text = sb.ToString();
+            sb.Clear();
         }
         else if (equipItem.Tier == string.Empty)
         {
@@ -204,7 +207,6 @@ public class UIDetailPage :BaseGameUI
     {
         base.Open();
         gameObject.SetActive(true);
-        Debug.Log("상세페이지 열림");
     }
 
     public override void Close()
@@ -284,7 +286,6 @@ public class UIDetailPage :BaseGameUI
         uiInventory.InventoryItemDrop(item);
 
         UIGameMng.Instance.CloseUI(UIGameType.DetailPage);
-        Debug.Log("아이템이 장착해제 되었습니다.");
     }
 
     // 아이템 장착해제
@@ -299,13 +300,11 @@ public class UIDetailPage :BaseGameUI
 
             // 해제 아이템을 EquipSlot에서 삭제하는 부분
             uiEquipment.unEquipItem(item);
-            Debug.Log("아이템 착용해제");
 
             // 캐릭터의 실질적 무기해제
             WeaponManager.Instance.StartWeaponUnEquip();
 
             UIGameMng.Instance.CloseUI(UIGameType.DetailPage);
-            Debug.Log("아이템이 장착해제 되었습니다.");
         }
         else
             Debug.Log("장착된 무기가 없습니다.");
@@ -324,7 +323,6 @@ public class UIDetailPage :BaseGameUI
 
             // 장착아이템을 EquipSlot에 채우는 부분
             uiEquipment.EquipItem(item, selectedSlot);
-            Debug.Log("아이템 착용");
 
             UIGameMng.Instance.CloseUI(UIGameType.DetailPage);
 

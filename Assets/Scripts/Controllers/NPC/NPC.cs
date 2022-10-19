@@ -19,6 +19,7 @@ public class NPC : MonoBehaviour
     private Animator anim;
 
     private Transform prevRotation;
+    private Vector3 cameraPos;
 
     private void Awake()
     {
@@ -75,8 +76,8 @@ public class NPC : MonoBehaviour
 
     public void TMProLookCamera()
     {
-        Vector3 camera = Camera.main.transform.position;
-        Vector3 targetDir = (nameText.rectTransform.position - camera).normalized;
+        cameraPos = Camera.main.transform.position;
+        Vector3 targetDir = (nameText.rectTransform.position - cameraPos).normalized;
         targetDir.x = 0;
         targetDir.z = 0;
 

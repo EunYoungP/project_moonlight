@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 public class PlayerInput : MonoBehaviour
 {
     private PlayerController playerController;
+    private Ray ray;
+    private RaycastHit hitInfo;
 
     public void Init()
     {
@@ -39,8 +41,7 @@ public class PlayerInput : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hitInfo;
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out hitInfo))
             {

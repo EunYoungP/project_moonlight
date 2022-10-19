@@ -33,7 +33,6 @@ public class HpBarParent : MonoBehaviour
         {
             GameObject hpBarPrefab = Instantiate(ResourceManager.Instance.HPBAR, UICanvas.transform);
             HpBar hpBar = hpBarPrefab.GetComponent<HpBar>();
-            //hpBar.targetTr = target.transform;
             hpBar.target = _target;
             hpBar.offset = offset;
             return hpBar;

@@ -57,7 +57,6 @@ public class SkillColliderManager : MonoBehaviour
     private void ResetSkillState(SkillCollider skillCollScript)
     {
         skillCollScript.transform.localPosition = Vector3.zero;
-        //skill2_ColliderScript.gameObject.SetActive(false);
         skillCollScript.activeTrigger = false;
         currPlayedSkill.SetStopSkill();
         runTime = 0;

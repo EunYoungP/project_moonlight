@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 타이머 구현하기
 public class LogoScene : BaseScene
 {
     private float fadeInTime = 3.0f;

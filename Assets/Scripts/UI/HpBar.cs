@@ -21,7 +21,6 @@ public class HpBar : MonoBehaviour
 
     public Vector3 offset = Vector3.zero;
     public GameObject target;
-    //public Transform targetTr;
 
     void Start()
     {

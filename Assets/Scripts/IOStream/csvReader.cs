@@ -51,10 +51,6 @@ public class csvReader : MonoBehaviour
 
     public List<Dictionary<string, string>> Read(string fileURL)
     {
-        //var filePath = ExtractFileID(fileURL);
-        //string path = "DBfile/" + file;
-
-        //TextAsset sourcefile = Resources.Load<TextAsset>(filePath);
         StringReader sr = new StringReader(sourceFileText);
         List<Dictionary<string, string>> list = new List<Dictionary<string, string>>();
 
@@ -90,10 +86,6 @@ public class csvReader : MonoBehaviour
 
     public List<string> ReadSubject(string fileURL)
     {
-        //string filePath = ExtractFileID(fileURL);
-        //string path = "DBfile/" + file;
-
-        //TextAsset sourcefile = Resources.Load<TextAsset>(filePath);
         StringReader sr = new StringReader(sourceFileText);
         List<string> subject = new List<string>();
 

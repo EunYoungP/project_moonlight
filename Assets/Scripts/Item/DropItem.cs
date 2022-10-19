@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 아이템을 화면에 떨궈주는 기능
-// ex) 몬스터를 죽였을때
-
 public class DropItem : MonoBehaviour
 {
-    int keyNum = 1;
+    private int keyNum = 1;
 
     public Dictionary<int,ItemObject> itemObjects = new Dictionary<int, ItemObject>();
     public List<GameObject> dropItems = new List<GameObject>();
@@ -186,30 +183,3 @@ public class DropItem : MonoBehaviour
         return dropPos;
     }
 }
-
-
-//foreach (GameObject obj in ResourceManager.Instance.ITEM)
-//{
-//    // itemData 를 ItemObject 값으로 넣어주고
-//    // ItemObject 인스턴스를 생성
-//    // ItemPrefab을 Instantiate 하면서, PickUpItem에 생성한 인스턴스를 넘긴다.
-//    if (obj.name == itemData.modelName)
-//    {
-//        for(int i = 0; i<itemCount; i++)
-//        {
-//            // ItemPrefab 생성
-//            GameObject ItemPrefab = Instantiate(obj, dropPos, Quaternion.identity);
-//            SetDropRotate(ItemPrefab);
-//            ItemPrefab.name = ItemPrefab.name.Replace("(Clone)", "");
-
-//            SetModelName(ItemPrefab);
-
-//            SetKeyID(ItemPrefab);
-
-//            OnDropItemVFX(ItemPrefab);
-
-//            dropItems.Add(ItemPrefab);
-//            return;
-//        }
-//    }
-//}

@@ -19,10 +19,9 @@ public enum EquipSlotType
 
 public class UIEquipment : BaseGameUI
 {
-    EquipSlot[] equipSlots;
-    List<ItemObject> equipItems = new List<ItemObject>();
-
-    ItemObject equipItem;
+    private List<ItemObject> equipItems = new List<ItemObject>();
+    private EquipSlot[] equipSlots;
+    private ItemObject equipItem;
 
     public override void Init()
     {

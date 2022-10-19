@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,15 +15,16 @@ public class SkillPanel : MonoBehaviour
     public Text skillLevel;
     public Button panelBtn;
     public GameObject EquipCheck;
+    private StringBuilder sb =  new StringBuilder(100);
 
     // 스킬패널에 해당스킬의 정보 표현
     public void DisplaySkill()
     {
-        //skillIcon.sprite = skill.skillIcon;
-        //DownLoadAssetBundle.Instance.LoadSkillSprite(this.skillIcon.sprite, skill.skillIcon);
         skillIcon.gameObject.SetActive(true);
         skillName.text = skill.name;
-        skillLevel.text = " 스킬 레벨 미구현";
+        sb.Append("스킬 사용가능 레벨 : ").Append(skill.useLevel.ToString());
+        skillLevel.text = sb.ToString();
+        sb.Clear();
         key = skill.key;
     }
 

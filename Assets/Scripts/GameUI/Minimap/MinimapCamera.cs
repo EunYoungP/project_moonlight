@@ -6,7 +6,8 @@ public class MinimapCamera : MonoBehaviour
 {
     private Transform player;
     private float distanceY = 20;
-    private Vector3 prevCameraPos;
+    private Vector3 newPosition;
+    private Transform playerCurPos;
 
     private void MinimapCameraInit()
     {
@@ -21,13 +22,11 @@ public class MinimapCamera : MonoBehaviour
         if (Player.Instance == null)
             return;
 
-        Transform playerCurPos = Player.Instance.transform;
+        playerCurPos = Player.Instance.transform;
 
-        Vector3 newPosition = playerCurPos.position;
+        newPosition = playerCurPos.position;
         newPosition += new Vector3(0, distanceY, 0);
         transform.position = newPosition;
-
-        //transform.rotation = Quaternion.Euler(90f, playerCurPos.eulerAngles.y, 0);
     }
 
     private void LateUpdate()

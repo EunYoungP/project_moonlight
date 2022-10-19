@@ -64,7 +64,6 @@ public class EquipSlot : MonoBehaviour
 
         UIGameMng.Instance.OpenUI<UIDetailPage>(UIGameType.DetailPage);
         UIDetailPage detailPage = GameObject.FindObjectOfType<UIDetailPage>();
-        //detailPage.SendMessage("Receive", item, SendMessageOptions.DontRequireReceiver);
         detailPage.Receive(item, inventorySlot);
     }
 }

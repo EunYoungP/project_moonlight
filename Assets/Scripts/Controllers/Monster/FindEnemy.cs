@@ -8,6 +8,8 @@ public class FindEnemy : MonoBehaviour
     private Camera m_fieldCamera;
     private Transform m_currTarget;
 
+    private Player player;
+
     private void Start()
     {
         Init();
@@ -16,12 +18,11 @@ public class FindEnemy : MonoBehaviour
     public void Init()
     {
         m_fieldCamera = GetComponent<Camera>();
+        player = GameObject.FindObjectOfType<Player>();
     }
 
     private void Update()
     {
-        Player player = GameObject.FindObjectOfType<Player>();
-
         if (player == null)
             return;
 
@@ -35,7 +36,6 @@ public class FindEnemy : MonoBehaviour
 
             m_currTarget = player.transform;
             transform.parent.SendMessage("SetTarget", player.transform, SendMessageOptions.DontRequireReceiver);
-            Debug.Log(player.name);
         }
         else
         {

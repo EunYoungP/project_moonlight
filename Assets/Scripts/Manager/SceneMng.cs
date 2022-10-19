@@ -124,7 +124,6 @@ public class SceneMng : MonoBehaviour
 
         // 씬변환 종료
         UIMng.Instance.CloseUI(UIType.UILoading);
-        //UIMng.Instance.OpenUI<Fade>(UIType.Fade).FadeIn(2.0f);
         sceneDic[currScene].Enter(currScene);
     }
     
@@ -141,7 +140,6 @@ public class SceneMng : MonoBehaviour
         currScene = nextScene;
 
         //씬변환 종료
-        //UIMng.Instance.OpenUI<Fade>(UIType.Fade).FadeIn(2.0f);
         sceneDic[currScene].Enter(currScene);
         yield return null;
     }

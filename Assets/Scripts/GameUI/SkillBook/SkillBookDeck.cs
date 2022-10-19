@@ -14,6 +14,7 @@ public class SkillBookDeck : MonoBehaviour
 
     private bool isStartPage = true;
     private float slideTime;
+    private Text pageText;
 
     private Skill selectedSkill;
     public PanelParent panelParent;
@@ -49,6 +50,7 @@ public class SkillBookDeck : MonoBehaviour
     public void InitDeck()
     {
         SlotParent.transform.position = firstPagePos.transform.position;
+        pageText = PageBtn.gameObject.GetComponentInChildren<Text>(true);
         SetPageText();
     }
 
@@ -138,7 +140,6 @@ public class SkillBookDeck : MonoBehaviour
 
     public void SetPageText()
     {
-        Text pageText = PageBtn.gameObject.GetComponentInChildren<Text>();
         if (isStartPage)
             pageText.text = "1";
         else

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Text;
 
 public class DungeonPage : BaseUI
 {
@@ -18,9 +19,11 @@ public class DungeonPage : BaseUI
 
     public Button closeBtn;
     public GameObject dungeonTypesParent;
+    private StringBuilder sb;
 
     public override void UIInit()
     {
+        sb = new StringBuilder(100);
         GetDungeonMenuBtns();
         GenerateDungeonData();
         AddListener();
@@ -36,7 +39,7 @@ public class DungeonPage : BaseUI
         gameObject.SetActive(false);
     }
 
-    // 던전 데이터를 키값과 함께 저장
+    // 던전 데이터를 키와 함께 저장
     private void GenerateDungeonData()
     {
         DungeonData dungeonData = new DungeonData("초급 수련관",
@@ -47,7 +50,7 @@ public class DungeonPage : BaseUI
         dungeonDataDic[dungeonDataDic.Count] = dungeonData;
     }
 
-    // 던전메뉴 버튼을 키값과 함께 저장
+    // 던전메뉴 버튼을 키와 함께 저장
     private void GetDungeonMenuBtns()
     {
         Button[] btnArg;
@@ -67,9 +70,6 @@ public class DungeonPage : BaseUI
         }
 
         closeBtn.onClick.AddListener(() => Close());
-        //closeBtn.onClick.AddListener(() => UIGameMng.Instance.OpenUI<UIMenu>(UIGameType.Menu));
-        //closeBtn.onClick.AddListener(() => UIGameMng.Instance.OpenUI<UIStat>(UIGameType.Stat));
-        //closeBtn.onClick.AddListener(() => UIGameMng.Instance.OpenUI<UIDeck>(UIGameType.Deck));
         closeBtn.onClick.AddListener(() => UIGameMng.Instance.SetBasicScreenUI(true));
 
     }
@@ -78,7 +78,9 @@ public class DungeonPage : BaseUI
     {
         this.dungeonMenuName.text = dungeonDataDic[dungeonKey].DungeonName;
         this.dungeonName.text = dungeonDataDic[dungeonKey].DungeonName;
-        this.enterLevel.text = "입장 가능 레벨 : " + dungeonDataDic[dungeonKey].DungeonEnterLevel;
+        sb.Append("입장 가능 레벨 : ").Append(dungeonDataDic[dungeonKey].DungeonEnterLevel.ToString());
+        this.enterLevel.text = sb.ToString();
+        sb.Clear();
         this.dungeonDesc.text = dungeonDataDic[dungeonKey].DungeonDesc;
         foreach(Image img in ResourceManager.Instance.DUNGEON_IMG)
         {

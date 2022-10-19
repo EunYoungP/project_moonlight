@@ -171,7 +171,6 @@ public class Player : MonoBehaviour
             _target.baseController.SetTarget(gameObject.transform);
             _target.SetDamage();
             _target.baseController.ChangeState(MonsterState.GetDamage);
-            Debug.Log(_target.name + "'s HP : " + _target.data.curHp);
         }
     }
 
@@ -208,17 +207,6 @@ public class Player : MonoBehaviour
     public void SetHpBar()
     {
         hpBar = HpBarParent.Instance.CreateHpBar(this.gameObject, hpBarOffset);
-
-        //GameObject canvas = GameObject.Find("UICanvas");
-        //if(canvas != null )
-        //{
-        //    uiCanvas = canvas.GetComponent<Canvas>();
-        //    GameObject hpBarPrefab = Instantiate<GameObject>(ResourceManager.Instance.HPBAR, uiCanvas.transform);
-        //    hpBarSlider = hpBarPrefab.GetComponentInChildren<Slider>();
-        //    hpBar = hpBarPrefab.GetComponent<HpBar>();
-        //    hpBar.targetTr = this.gameObject.transform;
-        //    hpBar.offset = hpBarOffset;
-        //}
     }
 
     private void AddSkillColliders()
@@ -274,7 +262,6 @@ public class Player : MonoBehaviour
     {
         isTalking = true;
         inputControlPanel.SetActive(isTalking);
-        //playerController.ChangeState(PlayerState.Talk);
     }
 
     private void EndTalk(NPC npc)

@@ -195,7 +195,7 @@ public class QuestManager : MonoBehaviour
         if (!startQuest)
             return;
 
-        // 느낌표 UI
+        // 퀘스트 느낌표 UI
         //NPC startNPC = NPCManager.Instance.GetNPC(questDatas[currQuestId].npcId[questActionIndex]);
         //if (startNPC != null)
         //    startNPC.OnQuestSign();
@@ -323,7 +323,6 @@ public class QuestManager : MonoBehaviour
             if(questItem.name == itemName)
             {
                 ItemObject newItemObject = DropItem.Instance.NewItemObect(questItem);
-                //Player.Instance.QuestNotificationEvent(GetCurrQuestData());
                 UIGameMng.Instance.uiGameDic[UIGameType.Inventory].AddItem(newItemObject);
                 return;
             }
@@ -339,7 +338,6 @@ public class QuestManager : MonoBehaviour
         FloatQuestPopup(currQuestData);
 
         Player.Instance.QuestNotificationEvent += FloatNoticeQuestText;
-        //FloatNoticeQuestText(currQuestData);
     }
 
     // 퀘스트 알림판

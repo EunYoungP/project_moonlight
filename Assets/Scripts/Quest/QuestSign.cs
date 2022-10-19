@@ -6,6 +6,10 @@ public class QuestSign : MonoBehaviour
 {
     public bool isActive = false;
     private float questsignOffset = 60f;
+    private RectTransform parentRect;
+    private RectTransform myRect;
+    private Vector3 targetScreenPos;
+    private Vector2 localPosition;
 
     public void ActiveQuestSign(GameObject target ,Canvas canvas)
     {
@@ -24,12 +28,12 @@ public class QuestSign : MonoBehaviour
     {
         while(isActive)
         {
-            RectTransform parentRect = parentCanvas.GetComponent<RectTransform>();
-            RectTransform myRect = GetComponent<RectTransform>();
+            parentRect = parentCanvas.GetComponent<RectTransform>();
+            myRect = GetComponent<RectTransform>();
 
-            Vector3 targetScreenPos = Camera.main.WorldToScreenPoint(targetPos.position);
+            targetScreenPos = Camera.main.WorldToScreenPoint(targetPos.position);
 
-            Vector2 localPosition = new Vector2(0, 0);
+            localPosition = new Vector2(0, 0);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect, targetScreenPos, null, out localPosition);
 
             myRect.localPosition = new Vector2( localPosition.x, localPosition.y + questsignOffset);

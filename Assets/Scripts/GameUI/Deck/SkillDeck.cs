@@ -13,7 +13,9 @@ public class SkillDeck : BaseDeck
     public Skill currSelectedSkill;
     private bool isWaitSkillAct;
     private bool isActive;
-    
+    private bool isBtnDown;
+    private Vector3 mouseInputPos;
+
     public override void Init()
     {
         skillSlots = GetComponentsInChildren<SkillSlot>();
@@ -35,11 +37,12 @@ public class SkillDeck : BaseDeck
         SkillManager.Instance.currSelectedSkill = selectedSkill;
         currSelectedSkill = selectedSkill;
         isWaitSkillAct = true;
+        isBtnDown = isWaitSkillAct;
         Player.Instance.playerController.isWaitActSkill = isWaitSkillAct;
         skillPopup.ShowPopUp(selectedSkill);
     }
 
-    // 스킬팝업창의 닫기버튼 에 OnClick이벤트추가된 함수
+    // 스킬팝업창의 닫기버튼 OnClick이벤트
     public void OnClickCancelSkill()
     {
         skillPopup.currSkillPopup.SetActive(false);
@@ -85,14 +88,15 @@ public class SkillDeck : BaseDeck
 
             if (Input.GetMouseButtonDown(0))
             {
+                isBtnDown = false;
+
                 skillPopup.UnShowPopUp();
 
                 // 마우스포인트에 타겟이 있다면 마커를 타겟에 붙여준다.
                 if (skillPopup.CheckUseSkill(currSelectedSkill) == true)
                 {
-                    Vector3 mousePos;
-                    mousePos = skillPopup.MouseBtn(currSelectedSkill);
-                    skillPopup.ShowSkillMarker(currSelectedSkill, mousePos);
+                    mouseInputPos = skillPopup.MouseBtn(currSelectedSkill);
+                    skillPopup.ShowSkillMarker(currSelectedSkill, mouseInputPos);
                 }
                 else if (skillPopup.CheckUseSkill(currSelectedSkill) == false)
                 {
@@ -103,14 +107,16 @@ public class SkillDeck : BaseDeck
             // 따라다닐때 해당하는 타겟에 마우스포인터가 가면 타겟/위치 표시
             if (Input.GetMouseButton(0))
             {
+                if (isBtnDown)
+                    return;
+
                 // SkillMarker Visuable 조건검사를 통과했다면
-                if (skillPopup.CheckUseSkill(currSelectedSkill)==true)
+                if (skillPopup.CheckUseSkill(currSelectedSkill) == true)
                 {
-                    Vector3 mousePos;
-                    mousePos = skillPopup.MouseBtn(currSelectedSkill);
-                    skillPopup.ShowSkillMarker(currSelectedSkill, mousePos);
+                    mouseInputPos = skillPopup.MouseBtn(currSelectedSkill);
+                    skillPopup.ShowSkillMarker(currSelectedSkill, mouseInputPos);
                 }
-                else if(skillPopup.CheckUseSkill(currSelectedSkill)==false)
+                else if (skillPopup.CheckUseSkill(currSelectedSkill) == false)
                 {
                     skillPopup.UnShowSkillMarker();
                 }
@@ -119,14 +125,16 @@ public class SkillDeck : BaseDeck
             // 마우스위치와 스킬범위에 타겟이있다면 스킬실행
             if (Input.GetMouseButtonUp(0))
             {
+                if (isBtnDown)
+                    return;
+
                 // 타겟을 따라가는 스킬이면 타겟에 마커 계속 생성되게 수정
                 if (skillPopup.CheckUseSkill(currSelectedSkill) == true)
                 {
-                    Vector3 mousePos;
-                    mousePos = skillPopup.MouseBtn(currSelectedSkill);
-                    skillPopup.ShowSkillMarker(currSelectedSkill, mousePos);
+                    mouseInputPos = skillPopup.MouseBtn(currSelectedSkill);
+                    skillPopup.ShowSkillMarker(currSelectedSkill, mouseInputPos);
 
-                    SetSkillPlay(mousePos);
+                    SetSkillPlay(mouseInputPos);
                 }
                 else if (skillPopup.CheckUseSkill(currSelectedSkill) == false)
                 {
@@ -150,7 +158,7 @@ public class SkillDeck : BaseDeck
     {
         if (currSelectedSkill.skillType == SkillType.Area)
         {
-            // 임시로 아무 transform 값 적용
+            // 임시로 랜덤 transform 값 적용
             Player.Instance.playerController.targetPos = transform;
             currSelectedSkill.SetPlaySkill(mousePos);
         }

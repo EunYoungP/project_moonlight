@@ -61,7 +61,7 @@ public class SoundManager : MonoBehaviour
         audioSourceArr[(int)type].Stop();
     }
 
-    // 오디오소스에 클립, 피치을 채워넣어주고 플레이 시켜주기
+    // 오디오소스에 클립, 피치을 채워넣어주고 플레이 시켜줍니다.
     private void PlaySound(AudioClip audioClip, SOUND type = SOUND.Effect, float pitch = 1.0f)
     {
         if (audioClip == null)
@@ -102,7 +102,7 @@ public class SoundManager : MonoBehaviour
         PlaySound(audioClip, type, pitch);
     }
 
-    // path 와 type 을 받아 Sound파일로부터 audioClip을 받아옴
+    // path 와 type 을 받아 Sound파일로부터 audioClip을 받아옵니다.
     // Resoucre.load 프로퍼티 구조 분석
     public AudioClip GetOrAddAudioClip(string path, SOUND type = SOUND.Effect)
     {

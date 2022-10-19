@@ -23,25 +23,8 @@ public class GameMng : MonoBehaviour
     void Awake()
     {
         Instance.Init();
-        //if(instance == null)
-        //{
-        //    GameObject obj = GameObject.Find("GameMng");
-        //    DontDestroyOnLoad(obj);
-
-        //    instance = obj.GetComponent<GameMng>();
-        //    Init();
-        //}
     }
 
-    //SLManager.Instance.Init();
-    //HpBarParent.Instance.Init();
-    //MonsterManager.Instance.Init();
-    //Player.Instance.Init();
-    //SkillManager.Instance.Init();
-    //UIGameMng.Instance.Init();
-    //UIMng.Instance.UIInit();
-    //WeaponManager.Instance.Init();
-    //QuestManager.Instance.Init();
     private void Init()
     {
         ItemDB.Instance.InitItem();

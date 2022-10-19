@@ -57,7 +57,6 @@ public class Monster : MonoBehaviour
             Player.Instance.playerController.targetPos = gameObject.transform;
             Player.Instance.SetDamage();
             Player.Instance.playerController.ChangeState(PlayerState.GetDamage);
-            Debug.Log(Player.Instance.data.name + "'s HP : " + Player.Instance.data.curHp);
 
             if (Player.Instance.data.curHp <= 0)
                 baseController.SetTarget(null);

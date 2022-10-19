@@ -11,7 +11,7 @@ public enum PlayerEffectType
 
 public class PlayerEffect : EffectBase
 {
-    List<Effect> playerEffects = new List<Effect>();
+    private List<Effect> playerEffects = new List<Effect>();
 
     public override void Init()
     {
@@ -30,7 +30,6 @@ public class PlayerEffect : EffectBase
 
     public override void PlaySkillEffect(int effectNum)
     {
-        // 현재 선택된 스킬에 null 이 들어가서 오류가 생긴다.
         Skill selectedSkill = SkillManager.Instance.currSelectedSkill;
         foreach(Effect effect in playerEffects)
         {

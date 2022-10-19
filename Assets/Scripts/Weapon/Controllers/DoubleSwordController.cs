@@ -5,8 +5,7 @@ using UnityEngine;
 // L : 검
 // R : 검
 
-// 2.넘겨받은 weapon 오브젝트의 타입에따라 다른곳에 장착
-
+// 넘겨받은 weapon 오브젝트의 타입에따라 다른곳에 장착
 public class DoubleSwordController : WeaponController
 {
     private Animator anim;
@@ -15,8 +14,6 @@ public class DoubleSwordController : WeaponController
     {
         anim = GetComponent<Animator>();
         anim.runtimeAnimatorController =Resources.Load<RuntimeAnimatorController>("Prefabs/Animator/Player DoubleSword");
-        //WeaponManager.Instance.currWeaponAnim.runtimeAnimatorController = anim.runtimeAnimatorController;
-        //Player.Instance.playerController.m_animator.runtimeAnimatorController = anim.runtimeAnimatorController;
     }
 
     // 새로운 무기와 같은 무기인지 검사

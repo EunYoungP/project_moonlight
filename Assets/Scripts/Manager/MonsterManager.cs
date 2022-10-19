@@ -32,7 +32,6 @@ public class MonsterManager : MonoBehaviour
 
     public void Init()
     {
-        //SLManager.Instance.Init();
         CreateMonster();
     }
 
@@ -60,11 +59,8 @@ public class MonsterManager : MonoBehaviour
         //isCreate = true;
     }
 
-    // 오류 확인
-    // monsterDic[mapType].Add 해도 값이 추가가 안됨.
     private void AddMonsterDic(MAP mapType, Monster monsterScript)
     {
-        // 키가 포함되어있지 않다면
         if(!monsterDic.ContainsKey(mapType))
         {
             List<Monster> monsterList = new List<Monster>();
@@ -81,7 +77,7 @@ public class MonsterManager : MonoBehaviour
 
     void SetRandomPos(GameObject obj)
     {
-        // 임시로 모두 0번째 terrain을 받아옴
+        // 임시로 모두 0번째 terrain을 받아옵니다.
         Terrain currMapTerrain = MapManager.Instance.currMap.terrainList[0];
         terrRadius = currMapTerrain.terrainData.size.x;
 

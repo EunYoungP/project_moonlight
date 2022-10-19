@@ -18,7 +18,6 @@ public enum PlayerState
     AfterDie,
 }
 
-// input 입력 분리
 public class PlayerController : MonoBehaviour
 {
     private PlayerState currState = PlayerState.Idle;
@@ -193,10 +192,10 @@ public class PlayerController : MonoBehaviour
     {
         Skill selectedSkill = SkillManager.Instance.currSelectedSkill;
 
+        // 스킬타입 무기타입 비교
         if (selectedSkill.UseWeaponState != WeaponManager.Instance.currWeaponType)
         {
             ChangeState(PlayerState.Idle);
-            Debug.Log("스킬에 맞지 않는 무기를 장착중입니다.");
             return;
         }
 
@@ -283,7 +282,7 @@ public class PlayerController : MonoBehaviour
         if (targetPos != null)
         {
             // 타겟의 태그값이 몬스터일 경우 처리합니다.
-            if (targetPos.tag.Equals("Monster"))
+            if (targetPos.CompareTag("Monster"))
             {
                 // 기본공격
                 if(!isSkillState)
@@ -304,7 +303,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
             // 타겟의 태그값이 아이템이라면 거리에 따라 획득할 수 있도록 합니다.
-            else if (targetPos.tag.Equals("Item"))
+            else if (targetPos.CompareTag("Item"))
             {
                 if (Vector3.Distance(transform.position, targetPos.transform.position) <= 0.5f)
                 {
@@ -314,21 +313,7 @@ public class PlayerController : MonoBehaviour
                     ChangeState(PlayerState.PickUp);
                 }
             }
-            // 타겟의 태그값이 엔피씨라면 거리에따라 대화를 시작합니다.
-            //else if(targetPos.gameObject.tag.Equals("NPC"))
-            //{
-            //    if (Vector3.Distance(transform.position, targetPos.transform.position) <= talkDistance)
-            //    {
-            //        talkingNpc = targetPos.gameObject.GetComponent<NPC>();
-
-            //        if(Player.Instance.TalkNpcEvent!= null)
-            //            Player.Instance.TalkNpcEvent(talkingNpc);
-
-            //        Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
-            //        //ChangeState(PlayerState.Idle);
-            //    }
-            //}
-            else if (targetPos.gameObject.tag.Equals("NPC"))
+            else if (targetPos.gameObject.CompareTag("NPC"))
             {
                 if (Vector3.Distance(transform.position, targetPos.transform.position) <= talkDistance)
                 {
@@ -413,7 +398,6 @@ public class PlayerController : MonoBehaviour
         if(!Player.Instance.isTalking)
         {
             Player.Instance.TalkNpc(talkingNpc.npcID, talkingNpc);
-            //ChangeState(PlayerState.Idle);
         }
         else
         {
@@ -483,7 +467,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isUsingPortal)
             return;
-        // null Exception
+
         if (other.gameObject.CompareTag("Portal"))
         {
             isUsingPortal = true;

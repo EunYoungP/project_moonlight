@@ -43,7 +43,7 @@ public class SkillManager : MonoBehaviour
 
     // 해당하는 weaponState에 맞는 스킬들을
     // skillNum 의 오름차순으로 리스트에 담아서 
-    // Dictionary의 값으로 넣어준다.
+    // Dictionary의 값으로 넣어줍니다.
     private void AddSkillDic(WeaponState weaponState)
     {
         List<Skill> equalWeaponSkill = new List<Skill>();

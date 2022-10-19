@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class PanelParent : MonoBehaviour
 {
-    SkillBookDeck skillBookDeck;
+    private SkillBookDeck skillBookDeck;
     public List<SkillPanel> skillPanels = new List<SkillPanel>();
     private int selectedPanel;
     private SkillDetail skillDetail;
@@ -18,7 +18,6 @@ public class PanelParent : MonoBehaviour
     }
 
     // 스킬 패널이 추가될때 버튼리스너 연결시키는 부분
-    // 어디서 allSkills에 스킬들이 들어가는지 모르겠ㄷ..ㅏ..
     public void AddOnClickListener(SkillPanel skillPanel)
     {
         skillPanel.panelBtn.onClick.AddListener(() => { SetWaitState(skillPanel.key); });

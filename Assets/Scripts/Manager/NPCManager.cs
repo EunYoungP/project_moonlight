@@ -13,7 +13,7 @@ public class NPCManager : MonoBehaviour
         COMPLETE,
     }
 
-    public Dictionary<int, NPC> NPCdic = new Dictionary<int, NPC>();    //모든 NPC정보, <NPCid,NPC>
+    public Dictionary<int, NPC> NPCdic = new Dictionary<int, NPC>();    // 모든 NPC정보, <NPCid,NPC>
     public NPC selectedNpc;
 
     private static NPCManager instance;
@@ -34,7 +34,7 @@ public class NPCManager : MonoBehaviour
         }
     }
 
-    public Action<NPCProgressType> ChangeNPCProgressTypeEvent;      //npc 진행상태 변화 이벤트
+    public Action<NPCProgressType> ChangeNPCProgressTypeEvent;      // NPC 진행상태 변화 이벤트
     private NPCProgressType _npcProgressType = NPCProgressType.BEFORE;
     public NPCProgressType npcProgressType
     {
@@ -82,13 +82,7 @@ public class NPCManager : MonoBehaviour
                 break;
             case QuestManager.QuestProgressType.SUCCESS:
                 npcProgressType = NPCProgressType.SUCCESS;
-                // talkQuest 클리어 ui띄우기
-                // 퀘스트 다음인덱스로 넘기기
-
-                // 퀘스트 완료 상태로 변경, 아래코드로 변경
-                //QuestManager.Instance.GetCurrQuest().CompleteQuest();
                 QuestManager.Instance.CompleteQuestByType();
-                
                 break;
         }
     }

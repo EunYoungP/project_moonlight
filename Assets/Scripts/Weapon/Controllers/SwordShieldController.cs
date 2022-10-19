@@ -40,11 +40,6 @@ public class SwordShieldController : WeaponController
         return false;
     }
 
-    private void CancleWeapon()
-    {
-
-    }
-
     public override void ChangeWeapon()
     {
 

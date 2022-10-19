@@ -55,8 +55,6 @@ public class ResourceManager : MonoBehaviour
                 DontDestroyOnLoad(obj);
 
                 instance = obj.GetComponent<ResourceManager>();
-                // new GameObject를 하는 순간에 Awake()함수가 호출되지는 않습니다.
-                // 따라서 매니저의 초기화 함수는 직접 호출해주는 것이 좋습니다.
                 instance.Init();
             }
             return instance;
@@ -142,7 +140,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    // 아이템 프리팹에있는 아이템 전부 로드해놓음
+    // 아이템 프리팹에있는 아이템 전부 로드합니다.
     public void LoadItem()
     {
         foreach(Item item in ItemDB.Instance.itemDB)
@@ -153,8 +151,7 @@ public class ResourceManager : MonoBehaviour
 
     public void LoadUI<T>() where T : BaseUI
     {
-        //if(loadUIR == null)
-            loadUIR = Resources.Load<GameObject>("Prefabs/UI/" + typeof(T).ToString());
+        loadUIR = Resources.Load<GameObject>("Prefabs/UI/" + typeof(T).ToString());
     }
 
     public void LoadGolem()

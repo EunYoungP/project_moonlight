@@ -72,8 +72,6 @@ public class WeaponManager : MonoBehaviour
 
         currWeaponR = weaponPosR.GetComponentInChildren<PickUpItem>();
         currWeaponL = weaponPosL.GetComponentInChildren<PickUpItem>();
-        // 일단 현재 Player가 가지고있는 Animator 가져옴 -> 추후 첫 Aniamtor NoWeapon으로 변경
-        // Test : currWeaponType = WeaponState.NoWeapon;
         currWeaponType = WeaponState.NoWeapon;
     }
 
@@ -201,7 +199,6 @@ public class WeaponManager : MonoBehaviour
     }
 
     // 각무기 실질적 무기교체 실행함수
-    // 현재무기가 NoWeapon 이었을 경우에는 새로운무기의 Animation을 가져쓰도록 수정해야함
     private void ChangeWeaponAction()
     {
         switch(newWeaponType)
@@ -229,7 +226,7 @@ public class WeaponManager : MonoBehaviour
         }
     }
 
-    // [무기 해제 루틴]
+    // 무기 해제 루틴
     public void StartWeaponUnEquip()
     {
         this.newWeapon = null;

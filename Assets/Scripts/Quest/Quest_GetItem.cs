@@ -19,8 +19,6 @@ public class Quest_GetItem : Quest
     }
 
     // TalkNPC 와 같이 실행
-    // 아이템수령 시점은?
-    // 대화가 끝나면 아이템수령?
     private void ProgressQuest(ItemObject getItem)
     {
         if (QuestManager.Instance.questProgressType != QuestManager.QuestProgressType.PROGRESS)

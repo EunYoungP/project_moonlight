@@ -14,7 +14,6 @@ public class SkillBookSlot : MonoBehaviour
     private float InitScale = 1.0f;
     private float currScale;
     private bool canPulse;
-
     public bool isEmpty;
 
     public GameObject PlusImg;
@@ -53,7 +52,6 @@ public class SkillBookSlot : MonoBehaviour
         this.skill = skill;
         skillIcon.gameObject.SetActive(true);
         skill.isEquip = true;
-        //skillIcon.sprite = skill.skillIcon;
         DownLoadAssetBundle.Instance.SetSkillBookSlotSprite();
     }
 
@@ -109,7 +107,7 @@ public class SkillBookSlot : MonoBehaviour
         StartCoroutine("CoScalePulse");
     }
 
-    // 슬롯 Pulse 효과 구현
+    // 슬롯 Pulse 효과
     IEnumerator CoScalePulse()
     {
         while(canPulse)
@@ -120,28 +118,4 @@ public class SkillBookSlot : MonoBehaviour
             yield return null;
         }
     }
-
-    /*
-    public void UseSkill(Skill skill)
-    {
-        if (skill.skillType.Equals(SkillType.Target))
-        {
-            SetUpTarget(skill);
-        }
-        else if (skill.skillType.Equals(SkillType.Area))
-        {
-            SetUpArea(skill);
-        }
-    }
-
-    public void SetUpTarget(Skill skill)
-    {
-        GameObject popUp = Instantiate(ResourceManager.Instance.SKILLPOPUP);
-    }
-
-    public void SetUpArea(Skill skill)
-    {
-
-    }
-    */
 }

@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// 아이템교환 함수는 델리게이트로 생성?
 // 아이템에 추가된 클래스
 public class PickUpItem : MonoBehaviour
 {
-    //public Item pickupItem;
-    //private ItemObject pickupItem;
     public ItemObject PPikcUpItem { get; set; }
     public string modelName;
 

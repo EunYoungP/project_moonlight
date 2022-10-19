@@ -7,6 +7,8 @@ public class InventorySlot : MonoBehaviour
 {
     public ItemObject item;
     private InventoryDeck invenDeck;
+    private InventorySlot[] invenSlots;
+    private Item newItemData;
 
     public Image Icon;
     public GameObject EquipImg;
@@ -31,14 +33,13 @@ public class InventorySlot : MonoBehaviour
         item = newItem;
         isItemExist = true;
 
-        Item itemData = ItemDB.Instance.GetItemByName(newItem.Name);
+        newItemData = ItemDB.Instance.GetItemByName(newItem.Name);
 
         if(Icon != null )
         {
             Icon.enabled = true;
-            Icon.sprite = itemData.icon;
+            Icon.sprite = newItemData.icon;
         }
-        //SlotAddListener();
     }
 
     public void ClearSlot()
@@ -69,10 +70,9 @@ public class InventorySlot : MonoBehaviour
 
     public void SetSelectedUI(bool isShow)
     {
-        // 모든 인벤토리 슬롯
-        InventorySlot[] invenSlots = UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InventorySlots;
         // 모든 인벤토리 슬롯 검색
-        if(isShow)
+        invenSlots = UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InventorySlots;
+        if (isShow)
         {
             foreach (InventorySlot invenSlot in invenSlots)
             {
@@ -103,7 +103,6 @@ public class InventorySlot : MonoBehaviour
         UIGameMng.Instance.OpenUI<UIDetailPage>(UIGameType.DetailPage);
         UIDetailPage detailPage = GameObject.FindObjectOfType<UIDetailPage>();
         detailPage.Receive(item, gameObject.GetComponent<InventorySlot>());
-        Debug.Log("상세페이지 열림");
     }
 
     private void SetWaitEquipState()

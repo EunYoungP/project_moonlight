@@ -16,9 +16,4 @@ public class UIMenu : BaseGameUI
     {
         gameObject.SetActive(false);
     }
-
-    public override void Init()
-    {
-
-    }
 }

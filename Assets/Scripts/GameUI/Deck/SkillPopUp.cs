@@ -16,6 +16,9 @@ public class SkillPopUp : MonoBehaviour
     public GameObject currSkillPopup;
     public GameObject target;
 
+    private Ray ray;
+    private RaycastHit hitInfo;
+
     // 스킬덱슬롯을 누르면 스킬발동 위치 지정을 돕는 팝업이 뜨게함
     public void ShowPopUp(Skill skill)
     {
@@ -40,8 +43,7 @@ public class SkillPopUp : MonoBehaviour
 
     public bool CheckUseSkill(Skill currSelectedSkill)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (currSelectedSkill.skillType.Equals(SkillType.Area))
         {
@@ -49,7 +51,6 @@ public class SkillPopUp : MonoBehaviour
             {
                 if (hitInfo.collider.CompareTag("Terrain"))
                 {
-                    //target = hitInfo.collider.gameObject;
                     return true;
                 }
             }
@@ -60,7 +61,7 @@ public class SkillPopUp : MonoBehaviour
             {
                 if (hitInfo.collider.CompareTag("Monster"))
                 {
-                    // 여기서 타겟을 설정
+                    // 타겟 설정
                     target = hitInfo.collider.gameObject;
                     return true;
                 }
@@ -69,12 +70,11 @@ public class SkillPopUp : MonoBehaviour
         return false;
     }
 
-    //// 마우스포인터있는곳에 target 검사후
-    ////  hitinfo 위치 넘겨주는 함수
+    // 마우스포인터있는곳에 target 검사후
+    //  hitinfo 위치 넘겨주는 함수
     public Vector3 MouseBtn(Skill currSelectedSkill)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
         if (currSelectedSkill.skillType.Equals(SkillType.Area))
         {
@@ -104,16 +104,14 @@ public class SkillPopUp : MonoBehaviour
     public void ShowSkillMarker(Skill skill, Vector3 mousePos)
     {
         // 지정한 지역안에 몬스터가 있는지,
-        // 있다면 그 몬스터를 타겟으로 설정하는 방법 구현해야함.
+        // 있다면 그 몬스터를 타겟으로 설정하는 방법 구현해야 합니다.
         if (skill.skillType.Equals(SkillType.Area))
         {
             AreaMarker.SetActive(true);
             AreaMarker.transform.position = new Vector3(mousePos.x, 10, mousePos.z);
-
-            // mouse 위치로 collider 위치 지정
         }
         // 타겟에 마우스포인터가 닿으면
-        // 타겟마커가 타겟아래쪽으로 붙어야한다.
+        // 타겟마커가 타겟아래쪽으로 붙어야 합니다.
         else if (skill.skillType.Equals(SkillType.Target))
         {
             TargetMarker.SetActive(true);

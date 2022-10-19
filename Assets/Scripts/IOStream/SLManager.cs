@@ -244,6 +244,13 @@ public class SLManager : MonoBehaviour
 
     #endregion
 
+    private void DeleteInvenDBFile()
+    {
+        string deleteFilePath = Application.persistentDataPath + "/InventoryDB.json";
+
+        File.Delete(deleteFilePath);
+    }
+
     private void InitInventoryItem()
     {
         // GoogleDrvie file Load/Save
@@ -262,6 +269,8 @@ public class SLManager : MonoBehaviour
         //    return;
         //}
         #endregion
+
+        //DeleteInvenDBFile();
 
         string filePath = Application.persistentDataPath + "/InventoryDB.json";
         // 새게임
@@ -296,7 +305,6 @@ public class SLManager : MonoBehaviour
         File.WriteAllText(path, jdata);
     }
 
-    // Android dataPath : C:/Users/Park E.Y/AppData/LocalLow/dobby/moonlight
     public void LoadDataInLocal()
     {
         string filePath = Application.persistentDataPath + "/InventoryDB.json";
@@ -340,7 +348,6 @@ public class SLManager : MonoBehaviour
         {
             fileData = request.downloadHandler.text;
             curInventoryItem = JsonConvert.DeserializeObject<List<ItemObject>>(fileData);
-            //UIGameMng.Instance.GetUI<UIInventory>(UIGameType.Inventory).InitItem();
         }
     }
 
@@ -368,6 +375,11 @@ public class SLManager : MonoBehaviour
 
     private void CreateInitJson()
     {
+        for(int i = 0; i < curInventoryItem.Count; i++)
+        {
+            curInventoryItem.Remove(curInventoryItem[i]);
+        }
+
         foreach(Item item in ItemDB.Instance.itemDB)
         {
             if(item.name == "심장석"

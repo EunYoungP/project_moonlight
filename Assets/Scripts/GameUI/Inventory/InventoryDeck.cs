@@ -18,6 +18,7 @@ public class InventoryDeck : MonoBehaviour
     private bool isStartPage = true;
     private bool isWaitEquip;
     private float slideTime;
+    private Text pageText;
 
     public void Init()
     {
@@ -141,7 +142,7 @@ public class InventoryDeck : MonoBehaviour
 
     private void SetPageText()
     {
-        Text pageText = PageBtn.gameObject.GetComponentInChildren<Text>();
+        pageText = PageBtn.gameObject.GetComponentInChildren<Text>();
         if (isStartPage)
         {
             pageText.text = "1";

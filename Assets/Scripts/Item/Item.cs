@@ -65,7 +65,7 @@ public class Item
     public Sprite icon;
     public bool isLock;
 
-    // subject늘어나면 일일이 추가해 주어야하는 부분
+    // subject늘어나면 추가해 주어야하는 부분
     public void ReadItem(List<string> list)
     {
         this.itemID = int.Parse(list[0]);

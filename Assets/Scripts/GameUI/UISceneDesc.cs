@@ -50,7 +50,6 @@ public class UISceneDesc : BaseGameUI
         float timer = 0;
         while (timer <= fadeInTime)
         {
-            //timer += Time.deltaTime / fadeInTime;
             timer += Time.deltaTime;
             float interpolateValue = timer / fadeInTime;
             SceneNameTxtMshPro.color = Color.Lerp(new Color(1, 1, 1, 0), Color.white, interpolateValue);

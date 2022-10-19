@@ -10,8 +10,6 @@ public class BaseScene : MonoBehaviour
 
     public virtual void LoadScene(SceneState enterSceneState)
     {
-        //MapManager.Instance.AddMapDic(enterSceneState);
-        //MonsterManager.Instance.CreateMonster();
     }
 
     public virtual void Enter(SceneState enterSceneState)
@@ -19,7 +17,6 @@ public class BaseScene : MonoBehaviour
         MapManager.Instance.AddMapDic(enterSceneState);
         MonsterManager.Instance.CreateMonster();
         UIMng.Instance.OpenUI<Fade>(UIType.Fade).FadeIn(2.0f);
-        //UIGameMng.Instance.uiGameDic[UIGameType.SceneDesc].Open(startNotification);
     }
 
     public virtual void Exit()
