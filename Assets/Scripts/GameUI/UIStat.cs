@@ -49,6 +49,7 @@ public class UIStat : BaseGameUI
 
     private void Update()
     {
+        // Player 에서 QuestPopup 입력을 막는 코드에서 UIGameMng Init이 실행되었습니다
         expSlider.value = (float)Player.Instance.data.exp / Player.Instance.data.maxExp;
         HPUpdate();
         MPUpdate();

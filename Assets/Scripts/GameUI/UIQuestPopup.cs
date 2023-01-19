@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Text;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class UIQuestPopup : BaseGameUI
 {
@@ -12,11 +13,39 @@ public class UIQuestPopup : BaseGameUI
     public TextMeshProUGUI titleText;
     public List<Image> rewardImages;
 
+    // Dotween Animation
+    [SerializeField] GameObject questPanel;
+    [SerializeField] private AnimationCurve animationCurve;
+    Sequence showSequence;
+    Sequence hideSequence;
+    Tweener floatTweener;
+
     public Sprite rewardMoneyImg;
     public Sprite rewardExpImg;
 
     private bool isActive = false;
+    public bool IsActive { get; }
+
     private StringBuilder sb = new StringBuilder(100);
+
+    private void BouncePanel()
+    {
+        if (floatTweener != null)
+            return;
+
+        floatTweener = questPanel.transform.DOMoveY(10, 1).SetRelative().SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuad).SetDelay(1);
+
+        showSequence = DOTween.Sequence().SetAutoKill(false).Pause()
+            .AppendCallback(() => floatTweener.Play())
+            .Append(hideSequence.Pause())
+            .Join(questPanel.transform.DOScale(0, 1).From().SetEase(animationCurve));
+
+        hideSequence = DOTween.Sequence().SetAutoKill(false).Pause()
+            .Join(questPanel.transform.DOScale(0, 1).SetEase(Ease.InBack))
+            .Append(showSequence.Pause())
+            .AppendCallback(() => floatTweener.Pause())
+            .OnComplete(() => isActive = false );
+    }
 
     public override void Open(QuestData currQuestData)
     {
@@ -27,6 +56,8 @@ public class UIQuestPopup : BaseGameUI
         sb.Append("'").Append(currQuestData.questName).Append("'").Append("완료");
         detailText.text = sb.ToString();
         sb.Clear();
+        BouncePanel();
+        showSequence.Play();
     }
 
     private void SetQuestRewardUI()
@@ -79,6 +110,7 @@ public class UIQuestPopup : BaseGameUI
             Player.Instance.CloseQuestUIEvent(NPCManager.Instance.selectedNpc.npcID, NPCManager.Instance.selectedNpc);
             Player.Instance.CloseQuestUIEvent -= Player.Instance.TalkNpc;
         }
+        hideSequence.Play();
         gameObject.SetActive(isActive);
     }
 

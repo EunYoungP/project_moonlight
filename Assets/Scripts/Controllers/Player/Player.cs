@@ -55,7 +55,6 @@ public class Player : MonoBehaviour
                 GameObject obj = Instantiate(ResourceManager.Instance.PLAYER);
                 DontDestroyOnLoad(obj);
                 instance = obj.GetComponent<Player>();
-                //instance.Init();
             }
             return instance;
         }
