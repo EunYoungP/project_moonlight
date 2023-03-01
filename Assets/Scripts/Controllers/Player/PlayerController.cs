@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
     {
         bool uiInput = EventSystem.current.IsPointerOverGameObject(pointerID);
         bool loadingState = SceneMng.Instance.LoadingState();
-        bool isPopupActive = UIGameMng.Instance.GetUI<UIQuestPopup>(UIGameType.QuestPopup).IsActive;
+        bool isPopupActive = UIQuestPopup.IsActive;
         if (uiInput == true
             || isWaitActSkill == true
             || isSkillState == true

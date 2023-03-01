@@ -13,7 +13,7 @@ public class UIQuestPopup : BaseGameUI
     public TextMeshProUGUI titleText;
     public List<Image> rewardImages;
 
-    // Dotween Animation
+    // DoTween Animation
     [SerializeField] GameObject questPanel;
     [SerializeField] private AnimationCurve animationCurve;
     Sequence showSequence;
@@ -24,29 +24,30 @@ public class UIQuestPopup : BaseGameUI
     public Sprite rewardExpImg;
 
     private bool isActive = false;
-    public bool IsActive { get; }
+    public static bool IsActive { get; }
 
     private StringBuilder sb = new StringBuilder(100);
 
-    private void BouncePanel()
+    public override void Init()
     {
-        if (floatTweener != null)
-            return;
+        DOAnimationQuestPopup();
+    }
 
-        floatTweener = questPanel.transform.DOMoveY(10, 1).SetRelative().SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuad).SetDelay(1);
+    private void DOAnimationQuestPopup()
+    {
+        floatTweener = questPanel.transform.DOMoveY(10, 1).SetRelative().SetLoops(-1, LoopType.Yoyo).SetEase(Ease.InOutQuad);
 
         showSequence = DOTween.Sequence().SetAutoKill(false).Pause()
             .AppendCallback(() => floatTweener.Play())
-            .Append(hideSequence.Pause())
-            .Join(questPanel.transform.DOScale(0, 1).From().SetEase(animationCurve));
+            .Join(questPanel.transform.DOScale(1,0.5f).SetEase(animationCurve));
 
         hideSequence = DOTween.Sequence().SetAutoKill(false).Pause()
-            .Join(questPanel.transform.DOScale(0, 1).SetEase(Ease.InBack))
-            .Append(showSequence.Pause())
+            .Join(questPanel.transform.DOScale(0, 0.5f).SetEase(Ease.InBack))
             .AppendCallback(() => floatTweener.Pause())
-            .OnComplete(() => isActive = false );
+            .OnComplete(() => gameObject.SetActive(isActive));
     }
 
+    // 22.02.02 다시 활성화될 때, 스케일이 1로 변하지 않고 0으로 유지되는 오류 발생
     public override void Open(QuestData currQuestData)
     {
         isActive = true;
@@ -56,8 +57,9 @@ public class UIQuestPopup : BaseGameUI
         sb.Append("'").Append(currQuestData.questName).Append("'").Append("완료");
         detailText.text = sb.ToString();
         sb.Clear();
-        BouncePanel();
-        showSequence.Play();
+        
+        hideSequence.Pause();
+        showSequence.Restart();
     }
 
     private void SetQuestRewardUI()
@@ -110,8 +112,8 @@ public class UIQuestPopup : BaseGameUI
             Player.Instance.CloseQuestUIEvent(NPCManager.Instance.selectedNpc.npcID, NPCManager.Instance.selectedNpc);
             Player.Instance.CloseQuestUIEvent -= Player.Instance.TalkNpc;
         }
-        hideSequence.Play();
-        gameObject.SetActive(isActive);
+        showSequence.Pause();
+        hideSequence.Restart();
     }
 
     private void Update()
